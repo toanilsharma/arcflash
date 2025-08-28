@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Arc Flash Safety Learning Tool</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --glow-color: hsl(193, 95%, 68%);
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #020617; /* slate-950 */
+            color: #d1d5db; /* gray-300 */
+            overflow-x: hidden;
+        }
+        
+        /* Aurora Background */
+        .aurora-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .aurora {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.2;
+            transition: all 3s ease-in-out;
+        }
+        
+        #aurora-1 {
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, #38bdf8, transparent 60%);
+            top: -20%;
+            left: -10%;
+        }
+        
+        #aurora-2 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, #f43f5e, transparent 60%);
+            bottom: -30%;
+            right: -20%;
+        }
+        
+        /* Glassmorphism Card Style */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6); /* slate-900 with opacity */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.4); /* slate-700 with opacity */
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        
+        /* Scroll-driven Animations */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Interactive Label */
+        .label-hotspot {
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+        
+        .label-hotspot:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 15px var(--glow-color));
+            cursor: pointer;
+        }
+        
+        /* Custom Slider */
+        input[type=range].ppe-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            cursor: pointer;
+            outline: none;
+            border-radius: 15px;
+            height: 8px;
+            background: #1e293b; /* slate-800 */
+        }
+        
+        input[type=range].ppe-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 28px;
+            width: 28px;
+            background-color: #fff;
+            border-radius: 50%;
+            border: 4px solid var(--glow-color);
+            box-shadow: 0 0 15px var(--glow-color);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        
+        input[type=range].ppe-slider::-moz-range-thumb {
+            height: 28px;
+            width: 28px;
+            background-color: #fff;
+            border-radius: 50%;
+            border: 4px solid var(--glow-color);
+            box-shadow: 0 0 15px var(--glow-color);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        
+        /* Do's and Don'ts Styles */
+        .dos-donts-card {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid #334155;
+        }
+        
+        .dos-donts-card ul { list-style: none; padding: 0; }
+        .dos-donts-card li { display: flex; align-items: flex-start; margin-bottom: 1rem; font-size: 1.1rem; }
+        .dos-donts-card li:last-child { margin-bottom: 0; }
+        .dos-donts-card .icon { flex-shrink: 0; width: 28px; height: 28px; margin-right: 1rem; }
+        
+        /* PPE Loadout Checklist */
+        .ppe-checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            background-color: rgba(30, 41, 59, 0.5);
+            border-radius: 0.5rem;
+            border-left: 4px solid #64748b; /* slate-500 */
+        }
+        
+        .ppe-checklist-item .note {
+            font-size: 0.8rem;
+            color: #94a3b8; /* slate-400 */
+            margin-left: auto;
+            font-style: italic;
+        }
+        
+        /* Boundary Visualization */
+        .boundary-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            transition: width 0.5s ease-out, height 0.5s ease-out, box-shadow 0.5s ease-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .boundary-label {
+            position: absolute;
+            transform: translateX(-50%);
+            background-color: rgba(10, 10, 10, 0.7);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: top 0.5s ease-out;
+            pointer-events: auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+        
+        #arc-flash-boundary { border: 2px solid #60a5fa; animation: pulse-glow-blue 3s infinite ease-in-out; }
+        #limited-boundary { border: 2px solid #facc15; animation: pulse-glow-yellow 3s infinite ease-in-out; }
+        #restricted-boundary { border: 2px solid #f97316; animation: pulse-glow-orange 3s infinite ease-in-out; }
+        #prohibited-boundary { border: 2px solid #ef4444; animation: pulse-glow-prohibited 3s infinite ease-in-out; }
+        .center-hazard { animation: pulse-glow-red 2s infinite ease-in-out; }
+        
+        /* Spark Animation Canvas */
+        #spark-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .content-layer { position: relative; z-index: 10; }
+        
+        /* Keyframe animations for pulsing effects */
+        @keyframes pulse-glow-red {
+            0%, 100% { box-shadow: 0 0 15px 5px rgba(239, 68, 68, 0.5); }
+            50% { box-shadow: 0 0 25px 10px rgba(239, 68, 68, 0.7); }
+        }
+        
+        @keyframes pulse-glow-blue {
+            0%, 100% { box-shadow: 0 0 15px 5px rgba(96, 165, 250, 0.4), inset 0 0 15px 3px rgba(96, 165, 250, 0.3); }
+            50% { box-shadow: 0 0 25px 8px rgba(96, 165, 250, 0.6), inset 0 0 25px 5px rgba(96, 165, 250, 0.5); }
+        }
+        
+        @keyframes pulse-glow-yellow {
+            0%, 100% { box-shadow: 0 0 15px 5px rgba(250, 204, 21, 0.4), inset 0 0 15px 3px rgba(250, 204, 21, 0.3); }
+            50% { box-shadow: 0 0 25px 8px rgba(250, 204, 21, 0.6), inset 0 0 25px 5px rgba(250, 204, 21, 0.5); }
+        }
+        
+        @keyframes pulse-glow-orange {
+            0%, 100% { box-shadow: 0 0 15px 5px rgba(249, 115, 22, 0.4), inset 0 0 15px 3px rgba(249, 115, 22, 0.3); }
+            50% { box-shadow: 0 0 25px 8px rgba(249, 115, 22, 0.6), inset 0 0 25px 5px rgba(249, 115, 22, 0.5); }
+        }
+        
+        @keyframes pulse-glow-prohibited {
+            0%, 100% { box-shadow: 0 0 15px 5px rgba(239, 68, 68, 0.5), inset 0 0 15px 3px rgba(239, 68, 68, 0.4); }
+            50% { box-shadow: 0 0 25px 8px rgba(239, 68, 68, 0.7), inset 0 0 25px 5px rgba(239, 68, 68, 0.6); }
+        }
+        
+        /* Modal Styles */
+        #info-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 40;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        #info-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            z-index: 50;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .boundary-label {
+                font-size: 10px;
+                padding: 1px 4px;
+            }
+            
+            .visualization-container {
+                height: 300px !important;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .visualization-container {
+                height: 250px !important;
+            }
+            
+            .boundary-label {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="aurora-container">
+        <div id="aurora-1" class="aurora"></div>
+        <div id="aurora-2" class="aurora"></div>
+    </div>
+
+    <main class="container mx-auto px-4 py-12 md:py-20">
+        <!-- HERO SECTION -->
+        <header class="text-center min-h-screen flex flex-col justify-center items-center">
+            <div class="reveal-on-scroll">
+                <h1 class="text-5xl md:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-slate-400 mb-6">
+                    The Invisible Fire
+                </h1>
+                <p class="text-lg md:text-2xl text-slate-300 max-w-4xl mx-auto">
+                    A comprehensive guide and interactive tool for mastering arc flash safety.
+                </p>
+                <a href="#intro" class="inline-block mt-12 text-lg font-bold bg-sky-400 text-slate-900 px-8 py-4 rounded-full shadow-[0_0_20px_theme(colors.sky.500)] hover:bg-sky-300 transition-all duration-300">
+                    Enter the Hazard Zone ＞
+                </a>
+            </div>
+        </header>
+
+        <!-- INTRO SECTION -->
+        <section id="intro" class="my-24 md:my-48 reveal-on-scroll">
+            <div class="glass-card p-8 md:p-16 text-center">
+                <h2 class="text-3xl md:text-5xl font-bold text-sky-300 mb-6">It Happens in 1/1000th of a Second.</h2>
+                <p class="text-lg md:text-xl text-slate-300 max-w-4xl mx-auto">
+                    That's less time than a camera flash. In that instant, a simple mistake—a dropped tool, a loose connection, even dust—can unleash an explosion four times hotter than the sun's surface. This is an <strong>arc flash</strong>. It's not a shock. It's a bomb. And understanding it is the first step to surviving it.
+                </p>
+            </div>
+        </section>
+
+        <!-- BOUNDARY EXPLORER SECTION -->
+        <section class="my-24 md:my-48 reveal-on-scroll">
+            <h2 class="text-4xl md:text-6xl font-bold text-center mb-4 text-sky-300">Arc Flash Boundary Explorer</h2>
+            <p class="text-center text-slate-300 max-w-3xl mx-auto mb-8">Adjust the parameters to see how they affect the hazard level and required safety boundaries.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <!-- Visualization -->
+                <div class="glass-card p-6 order-2 lg:order-1">
+                    <div class="visualization-container relative w-full aspect-square mx-auto">
+                        <canvas id="spark-canvas"></canvas>
+                        <div id="arc-flash-boundary" class="boundary-circle"></div>
+                        <div id="limited-boundary" class="boundary-circle"></div>
+                        <div id="restricted-boundary" class="boundary-circle"></div>
+                        <div id="prohibited-boundary" class="boundary-circle"></div>
+                        <div id="arc-flash-label" class="boundary-label">Arc Flash</div>
+                        <div id="limited-label" class="boundary-label">Limited</div>
+                        <div id="restricted-label" class="boundary-label">Restricted</div>
+                        <div id="prohibited-label" class="boundary-label">Prohibited</div>
+                        <div class="center-hazard absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-900 w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center border-2 border-red-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-6 md:w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Controls -->
+                <div class="content-layer space-y-6 order-1 lg:order-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-blue-900/50 border border-blue-700 p-4 rounded-xl text-center">
+                            <h2 class="text-base font-semibold text-blue-300 tracking-wider uppercase">Incident Energy</h2>
+                            <p id="incident-energy-value" class="text-3xl md:text-4xl font-bold text-white">8.0 cal/cm2</p>
+                            <p id="incident-energy-distance-info" class="text-sm text-blue-300">(at 18-inch working distance)</p>
+                        </div>
+                        <div class="bg-gray-800 border border-gray-700 p-4 rounded-xl">
+                            <div class="flex items-center justify-between">
+                                <h2 class="text-base font-semibold text-gray-300 tracking-wider uppercase">Required PPE Category</h2>
+                                <p class="flex items-center">
+                                    <span id="ppe-category-dot" class="w-4 h-4 rounded-full mr-2 bg-yellow-500"></span>
+                                    <span id="ppe-category-value" class="text-3xl md:text-4xl font-bold text-white">2</span>
+                                </p>
+                            </div>
+                            <p id="ppe-description" class="text-sm text-gray-400 mt-1">Arc-rated clothing, face shield, balaclava, gloves, and ear protection required.</p>
+                            <p id="ppe-suggestion" class="text-sm text-blue-300 mt-2"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card p-6 space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                            <div>
+                                <label for="voltage-slider" class="flex justify-between items-center text-sm md:text-base font-medium text-gray-200">
+                                    <span>System Voltage</span>
+                                    <span class="flex items-center">
+                                        <span id="voltage-value" class="font-bold text-blue-400">480 V</span>
+                                        <button class="info-btn ml-2 text-gray-400 hover:text-white" data-param="voltage">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </span>
+                                </label>
+                                <input id="voltage-slider" type="range" min="208" max="1000" value="480" step="1" class="w-full mt-2">
+                            </div>
+                            <div>
+                                <label for="fault-current-slider" class="flex justify-between items-center text-sm md:text-base font-medium text-gray-200">
+                                    <span>Bolted Fault Current</span>
+                                    <span class="flex items-center">
+                                        <span id="fault-current-value" class="font-bold text-blue-400">20 kA</span>
+                                        <button class="info-btn ml-2 text-gray-400 hover:text-white" data-param="fault-current">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </span>
+                                </label>
+                                <input id="fault-current-slider" type="range" min="0.5" max="106" value="20" step="0.5" class="w-full mt-2">
+                            </div>
+                            <div>
+                                <label for="clearing-time-slider" class="flex justify-between items-center text-sm md:text-base font-medium text-gray-200">
+                                    <span>Clearing Time</span>
+                                    <span class="flex items-center">
+                                        <span id="clearing-time-value" class="font-bold text-blue-400">0.1 s</span>
+                                        <button class="info-btn ml-2 text-gray-400 hover:text-white" data-param="clearing-time">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </span>
+                                </label>
+                                <input id="clearing-time-slider" type="range" min="0.01" max="2" value="0.1" step="0.01" class="w-full mt-2">
+                            </div>
+                            <div>
+                                <label for="config-select" class="flex justify-between items-center text-sm md:text-base font-medium text-gray-200">
+                                    <span>Equipment Configuration</span>
+                                    <button class="info-btn ml-2 text-gray-400 hover:text-white" data-param="configuration">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </label>
+                                <select id="config-select" class="mt-2 block w-full bg-gray-800 border border-gray-700 text-white rounded-md p-2 text-sm md:text-base">
+                                    <option value="VCB">VCB (Vertical Conductors/Box)</option>
+                                    <option value="VCBB">VCBB (Vertical Conductors/Box/Barrier)</option>
+                                    <option value="HCB">HCB (Horizontal Conductors/Box)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="working-distance-slider" class="flex justify-between items-center text-sm md:text-base font-medium text-gray-200">
+                                    <span>Working Distance</span>
+                                    <span class="flex items-center">
+                                        <span id="working-distance-value" class="font-bold text-blue-400">18 in</span>
+                                        <button class="info-btn ml-2 text-gray-400 hover:text-white" data-param="working-distance">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </span>
+                                </label>
+                                <input id="working-distance-slider" type="range" min="1" max="100" value="18" step="1" class="w-full mt-2">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="explanation-panel" class="space-y-4"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DYNAMIC PPE LOADOUT -->
+        <section class="my-24 md:my-48 reveal-on-scroll">
+            <h2 class="text-4xl md:text-6xl font-bold text-center mb-4 text-sky-300">Dynamic PPE Loadout</h2>
+            <p class="text-center text-slate-300 max-w-3xl mx-auto mb-16">The <strong>Incident Energy</strong> dictates your armor. Use this tool as your final gear check. Drag the slider to generate the required PPE checklist for your task.</p>
+            <div class="glass-card p-8 md:p-12">
+                <div class="mb-8">
+                    <label for="ppe-slider" class="block mb-4 text-lg font-medium text-slate-300">Incident Energy: <span id="energy-value" class="font-bold text-sky-300 text-2xl">1.2</span> cal/cm2</label>
+                    <input id="ppe-slider" type="range" min="0" max="50" value="1.2" step="0.1" class="ppe-slider">
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    <div class="bg-slate-900/70 rounded-xl p-6">
+                        <h3 id="ppe-category" class="text-3xl font-bold text-green-400 mb-4 transition-colors duration-300">PPE Category 1</h3>
+                        <p id="ppe-details" class="text-slate-300 mb-6">This is the complete list of required gear for this hazard level.</p>
+                        <div id="ppe-checklist" class="space-y-3">
+                            <!-- Checklist items are dynamically generated here -->
+                        </div>
+                    </div>
+                    <div class="flex justify-center items-center">
+                        <img id="ppe-image" src="https://placehold.co/300x400/0f172a/9ca3af?text=CAT+0" alt="Worker in PPE" class="rounded-lg transition-all duration-500 max-h-[500px]">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- HIERARCHY OF CONTROLS -->
+        <section class="my-24 md:my-48 reveal-on-scroll">
+            <h2 class="text-4xl md:text-6xl font-bold text-center mb-4 text-sky-300">The Safety Pyramid</h2>
+            <p class="text-center text-slate-300 max-w-3xl mx-auto mb-16">PPE is a last resort. True safety engineering aims to eliminate the hazard entirely. This is the <strong>Hierarchy of Controls</strong>, the professional's roadmap to a safer worksite.</p>
+            <div class="space-y-2 max-w-3xl mx-auto">
+                <!-- Pyramid levels will be injected by JS -->
+            </div>
+        </section>
+
+        <!-- DO'S AND DON'TS SECTION -->
+        <section class="my-24 md:my-48 reveal-on-scroll">
+            <h2 class="text-4xl md:text-6xl font-bold text-center mb-4 text-sky-300">The Golden Rules: Do's & Don'ts</h2>
+            <p class="text-center text-slate-300 max-w-3xl mx-auto mb-16">
+                Safety is a habit. These are the non-negotiable rules for working with energized equipment. Internalize them.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                <!-- DO'S Column -->
+                <div class="dos-donts-card border-green-500/50">
+                    <h3 class="text-3xl font-bold text-green-400 mb-6 text-center">DO ✔</h3>
+                    <ul>
+                        <li><span class="icon text-green-400"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span><span><strong>De-energize</strong> whenever possible. The only way to guarantee safety is to turn it off.</span></li>
+                        <li><span class="icon text-green-400"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span><span><strong>Inspect your PPE</strong> before every use. Look for rips, burns, or contamination.</span></li>
+                        <li><span class="icon text-green-400"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span><span><strong>Use insulated tools</strong> that are properly rated for the voltage you are working with.</span></li>
+                        <li><span class="icon text-green-400"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span><span><strong>Establish and respect</strong> the Arc Flash and Shock Protection Boundaries.</span></li>
+                    </ul>
+                </div>
+                <!-- DON'TS Column -->
+                <div class="dos-donts-card border-red-500/50">
+                    <h3 class="text-3xl font-bold text-red-400 mb-6 text-center">DON'T ✖</h3>
+                    <ul>
+                        <li><span class="icon text-red-400"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span><span><strong>Never work alone</strong> on or near energized equipment. Always have a safety observer.</span></li>
+                        <li><span class="icon text-red-400"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span><span><strong>Don't wear</strong> clothing made of synthetic materials (like polyester or nylon) that can melt onto your skin.</span></li>
+                        <li><span class="icon text-red-400"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span><span><strong>Don't become complacent.</strong> Treat every electrical panel as if it's live until proven otherwise.</span></li>
+                        <li><span class="icon text-red-400"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span><span><strong>Don't rush.</strong> Take the time to plan the job, assess the risks, and follow the safety procedures.</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center py-8 border-t border-slate-800">
+        <p class="text-gray-300">Stay vigilant. Stay safe.</p>
+        <p class="text-yellow-300 text-lg mt-2">Created by Anil Sharma</p>
+        <p class="text-gray-300 text-sm">&copy; 2025 Arc Flash Tool. All rights reserved.</p>
+        <div class="mt-4 px-4 text-sm text-gray-400 max-w-4xl mx-auto">
+            <p><strong class="font-bold">Disclaimer:</strong> This is an educational tool. Calculations are based on the IEEE 1584-2018 standard using typical equipment parameters. This tool must not be used for real-world risk assessment, which requires a comprehensive study by a qualified professional.</p>
+        </div>
+    </footer>
+
+    <!-- Info Modal -->
+    <div id="info-modal-backdrop"></div>
+    <div id="info-modal" class="w-11/12 max-w-2xl bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl">
+        <div class="p-6 md:p-8">
+            <div class="flex justify-between items-center">
+                <h2 id="modal-title" class="text-2xl md:text-3xl font-bold text-white">Boundary Information</h2>
+                <button id="modal-close-btn" class="text-gray-400 hover:text-white transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="modal-content" class="mt-4 text-gray-300 space-y-4 text-lg">
+                <!-- Dynamic content goes here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Observer for scroll animations ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+
+            // --- Aurora background effect ---
+            const aurora1 = document.getElementById('aurora-1');
+            const aurora2 = document.getElementById('aurora-2');
+            document.addEventListener('mousemove', (e) => {
+                const { clientX, clientY } = e;
+                const x = clientX / window.innerWidth;
+                const y = clientY / window.innerHeight;
+                aurora1.style.transform = `translate(${x * 50}px, ${y * 50}px)`;
+                aurora2.style.transform = `translate(${-x * 50}px, ${-y * 50}px)`;
+            });
+
+            // --- Dynamic PPE Loadout ---
+            const ppeSlider = document.getElementById('ppe-slider');
+            const energyValue = document.getElementById('energy-value');
+            const ppeImage = document.getElementById('ppe-image');
+            const ppeCategory = document.getElementById('ppe-category');
+            const ppeDetails = document.getElementById('ppe-details');
+            const ppeChecklist = document.getElementById('ppe-checklist');
+
+            const ppeLevels = [
+                { max: 1.2, cat: 'CAT 0', color: 'text-slate-300', details: 'Non-melting natural fiber clothing. Not considered Arc-Rated.', img: 'https://placehold.co/300x400/0f172a/9ca3af?text=CAT+0', glow: 'hsl(210, 40%, 80%)',
+                    items: [
+                        { item: 'Long-Sleeve Shirt & Pants', note: 'Natural fiber (e.g., cotton)' },
+                        { item: 'Safety Glasses', note: null },
+                        { item: 'Hearing Protection', note: null },
+                        { item: 'Leather Footwear', note: null }
+                    ]
+                },
+                { max: 8, cat: 'CAT 1', color: 'text-green-400', details: 'Requires a single layer of Arc-Rated (AR) protective clothing.', img: 'https://placehold.co/300x400/10B981/0f172a?text=CAT+1', glow: 'hsl(145, 63%, 49%)',
+                    items: [
+                        { item: 'AR Clothing (min. 4 cal/cm2)', note: 'Shirt & pants or coverall' },
+                        { item: 'AR Face Shield or Hood', note: null },
+                        { item: 'Hard Hat', note: null },
+                        { item: 'Safety Glasses', note: null },
+                        { item: 'Hearing Protection', note: null },
+                        { item: 'Voltage-Rated Gloves', note: 'Air-test before each use' },
+                        { item: 'Leather Protectors', note: 'Over gloves' },
+                        { item: 'Leather Footwear', note: null }
+                    ]
+                },
+                { max: 25, cat: 'CAT 2', color: 'text-yellow-400', details: 'Requires a base layer and outer layer of AR clothing.', img: 'https://placehold.co/300x400/F59E0B/0f172a?text=CAT+2', glow: 'hsl(38, 92%, 50%)',
+                    items: [
+                        { item: 'AR Clothing (min. 8 cal/cm2)', note: 'May require multiple layers' },
+                        { item: 'AR Flash Hood (Balaclava)', note: 'Covers head and neck' },
+                        { item: 'Hard Hat', note: null },
+                        { item: 'Safety Glasses', note: null },
+                        { item: 'Hearing Protection', note: null },
+                        { item: 'Voltage-Rated Gloves', note: 'Air-test before each use' },
+                        { item: 'Leather Protectors', note: 'Over gloves' },
+                        { item: 'Leather Footwear', note: null }
+                    ]
+                },
+                { max: 40, cat: 'CAT 3', color: 'text-orange-500', details: 'Requires a multi-layer AR flash suit.', img: 'https://placehold.co/300x400/F97316/0f172a?text=CAT+3', glow: 'hsl(24, 95%, 53%)',
+                    items: [
+                        { item: 'AR Flash Suit (min. 25 cal/cm2)', note: 'Jacket, bibs, or coverall' },
+                        { item: 'AR Flash Hood', note: 'Full hood with face shield' },
+                        { item: 'Hard Hat', note: null },
+                        { item: 'Safety Glasses', note: null },
+                        { item: 'Hearing Protection', note: null },
+                        { item: 'Voltage-Rated Gloves', note: 'Air-test before each use' },
+                        { item: 'Leather Protectors', note: 'Over gloves' },
+                        { item: 'Leather Footwear', note: null }
+                    ]
+                },
+                { max: Infinity, cat: 'CAT 4', color: 'text-red-500', details: 'Maximum protection required for extreme hazards.', img: 'https://placehold.co/300x400/EF4444/0f172a?text=CAT+4', glow: 'hsl(0, 84%, 60%)',
+                    items: [
+                        { item: 'AR Flash Suit (min. 40 cal/cm2)', note: 'Highest level of protection' },
+                        { item: 'AR Flash Hood', note: 'Full hood with face shield' },
+                        { item: 'Hard Hat', note: null },
+                        { item: 'Safety Glasses', note: null },
+                        { item: 'Hearing Protection', note: null },
+                        { item: 'Voltage-Rated Gloves', note: 'Air-test before each use' },
+                        { item: 'Leather Protectors', note: 'Over gloves' },
+                        { item: 'Leather Footwear', note: null }
+                    ]
+                }
+            ];
+
+            function updatePPE(value) {
+                energyValue.textContent = value.toFixed(1);
+                const level = ppeLevels.find(l => value <= l.max);
+                if (level) {
+                    ppeCategory.textContent = level.cat;
+                    ppeCategory.className = `text-3xl font-bold ${level.color} mb-4 transition-colors duration-300`;
+                    ppeDetails.textContent = level.details;
+                    if(ppeImage.src !== level.img) ppeImage.src = level.img;
+                    document.documentElement.style.setProperty('--glow-color', level.glow);
+                    aurora1.style.background = `radial-gradient(circle, ${level.glow}, transparent 60%)`;
+
+                    // Generate Checklist
+                    ppeChecklist.innerHTML = ''; // Clear previous checklist
+                    level.items.forEach(item => {
+                        const itemEl = document.createElement('div');
+                        itemEl.className = 'ppe-checklist-item';
+                        let noteHTML = item.note ? `<span class="note">${item.note}</span>` : '';
+                        itemEl.innerHTML = `
+                            <svg class="w-6 h-6 mr-3 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span>${item.item}</span>
+                            ${noteHTML}
+                        `;
+                        ppeChecklist.appendChild(itemEl);
+                    });
+                }
+            }
+
+            ppeSlider.addEventListener('input', (event) => {
+                updatePPE(parseFloat(event.target.value));
+            });
+            updatePPE(parseFloat(ppeSlider.value)); // Initialize
+
+            // --- Hierarchy of Controls Pyramid ---
+            const pyramidContainer = document.querySelector('.space-y-2.max-w-3xl.mx-auto');
+            const pyramidLevels = [
+                { text: '<strong>1. Elimination:</strong> De-energize. The only 100% effective method.', color: 'green' },
+                { text: '<strong>2. Substitution:</strong> Use lower energy equipment.', color: 'sky' },
+                { text: '<strong>3. Engineering Controls:</strong> Arc-resistant gear, remote racking.', color: 'purple' },
+                { text: '<strong>4. Awareness:</strong> Warning labels, safe procedures.', color: 'yellow' },
+                { text: '<strong>5. PPE:</strong> Your last line of defense.', color: 'rose' }
+            ];
+            pyramidLevels.forEach((level, index) => {
+                const el = document.createElement('div');
+                el.className = `reveal-on-scroll p-4 bg-${level.color}-500/10 border-2 border-${level.color}-500 rounded-lg text-center mx-auto`;
+                el.style.width = `${60 + index * 8}%`;
+                el.innerHTML = `<span class="text-${level.color}-400">${level.text}</span>`;
+                pyramidContainer.appendChild(el);
+            });
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+
+            // --- BOUNDARY EXPLORER FUNCTIONALITY ---
+            // DOM Element References
+            const voltageSlider = document.getElementById('voltage-slider');
+            const faultCurrentSlider = document.getElementById('fault-current-slider');
+            const clearingTimeSlider = document.getElementById('clearing-time-slider');
+            const configSelect = document.getElementById('config-select');
+            const workingDistanceSlider = document.getElementById('working-distance-slider');
+            
+            const voltageValue = document.getElementById('voltage-value');
+            const faultCurrentValue = document.getElementById('fault-current-value');
+            const clearingTimeValue = document.getElementById('clearing-time-value');
+            const workingDistanceValue = document.getElementById('working-distance-value');
+            
+            const afbCircle = document.getElementById('arc-flash-boundary');
+            const limitedCircle = document.getElementById('limited-boundary');
+            const restrictedCircle = document.getElementById('restricted-boundary');
+            const prohibitedCircle = document.getElementById('prohibited-boundary');
+            const explanationPanel = document.getElementById('explanation-panel');
+            const incidentEnergyValue = document.getElementById('incident-energy-value');
+            const ppeCategoryValue = document.getElementById('ppe-category-value');
+            const ppeCategoryDot = document.getElementById('ppe-category-dot');
+            const ppeDescription = document.getElementById('ppe-description');
+            const ppeSuggestion = document.getElementById('ppe-suggestion');
+            const incidentEnergyDistanceInfo = document.getElementById('incident-energy-distance-info');
+            const labels = {
+                afb: document.getElementById('arc-flash-label'),
+                limited: document.getElementById('limited-label'),
+                restricted: document.getElementById('restricted-label'),
+                prohibited: document.getElementById('prohibited-label'),
+            };
+            const modalBackdrop = document.getElementById('info-modal-backdrop');
+            const modal = document.getElementById('info-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContent = document.getElementById('modal-content');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+
+            // Define boundary details
+            const boundaryInfo = {
+                'Arc Flash': {
+                    name: 'Arc Flash',
+                    desc: 'The minimum safe distance to prevent a second-degree burn if an arc flash occurs. Anyone crossing this boundary must wear appropriate Arc-Rated PPE.',
+                    details: `<p>The <strong>Arc Flash Boundary</strong> is focused on protecting people from the intense heat of an arc flash explosion. It marks the distance where the heat energy drops to 1.2 cal/cm2, the point where bare skin could get a second-degree burn.</p>
+                              <div class="mt-4 pt-3 border-t border-gray-700"><h4 class="font-semibold text-lg text-gray-100">Key Takeaways</h4><ul class="list-disc list-inside mt-2 space-y-1 text-base"><li>This boundary is about <strong>BURN</strong> protection.</li><li>It is calculated based on potential energy, not voltage.</li><li>Crossing it requires specific Arc-Rated (AR) Personal Protective Equipment (PPE).</li></ul></div>
+                              <div class="mt-4 pt-3 border-t border-gray-700"><h4 class="font-semibold text-lg text-gray-100">Required Actions & PPE</h4><p class="text-base">Before crossing, a worker must wear AR clothing with a rating equal to or greater than the calculated incident energy. This can range from an AR shirt and pants to a full arc flash suit.</p></div>
+                              <div class="mt-4 p-3 bg-gray-800 rounded-lg"><strong class="text-blue-400">Real-World Example:</strong> An electrician needs to inspect a 480V panel with a calculated Arc Flash Boundary of 4 feet. To get closer, they must put on, at minimum, a Category 2 arc flash suit, including a hood, gloves, and hearing protection.</div>`
+                },
+                'Limited': {
+                    name: 'Limited',
+                    desc: 'An approach limit for unqualified persons to protect them from shock hazards.',
+                    details: `<p>The <strong>Limited Approach Boundary</strong> is the outer perimeter designed to protect people from electric <strong>SHOCK</strong>. This is the line that untrained or "unqualified" individuals must not cross.</p>
+                              <div class="mt-4 pt-3 border-t border-gray-700"><h4 class="font-semibold text-lg text-gray-100">Key Takeaways</h4><ul class="list-disc list-inside mt-2 space-y-1 text-base"><li>This boundary is about <strong>SHOCK</strong> protection.</li><li>It is determined by the system voltage.</li><li>It acts as a "keep out" sign for the general public or non-electrical staff.</li></ul></div>
+                              <div class="mt-4 pt-3 border-t border-gray-700"><h4 class="font-semibold text-lg text-gray-100">Required Actions & PPE</h4><p class="text-base">Unqualified persons must stay outside this boundary. They can only enter if escorted by a qualified person and are provided with appropriate PPE if necessary.</p></div>
+                              <div class="mt-4 p-3 bg-gray-800 rounded-lg"><strong class="text-yellow-400">Real-World Example:</strong> A painter or housekeeping staff needs to work in an electrical room. The Limited Approach Boundary for a panel is marked on the floor at 3 feet 6 inches. They must ensure their ladder, tools, and body stay outside this line at all times.</div>`
+                },
+                'Restricted': {
+                    name: 'Restricted',
+                    desc: 'An area with increased shock risk that requires qualified persons, specific PPE, and a work plan to enter.',
+                    details: `<p>The <strong>Restricted Approach Boundary</strong> is a high-risk zone for electric shock, located closer to the live parts. Only qualified persons with specific training and equipment can enter.</p>
+                              <div class="mt-4 pt-3 border-t border-gray-700"><h4 class="font-semibold text-lg text-gray-100">Key Takeaways</h4><ul class="list-disc list-inside mt-2 space-y-1 text-base"><li>This is a high-risk <strong>SHOCK</strong> zone.</li><li>Only qualified persons may enter.</li><li>Accidental movement could easily lead to contact or an arc.</li></ul></div>
+                              <div class="mt-4 pt-3 border-t border-gray-700"><h4 class="font-semibold text-lg text-gray-100">Required Actions & PPE</h4><p class="text-base">Entry requires an energized work permit, a detailed work plan, and wearing appropriate shock protection PPE, such as voltage-rated gloves and insulated tools. The worker must be insulated or guarded from the live parts.</p></div>
+                              <div class="mt-4 p-3 bg-gray-800 rounded-lg"><strong class="text-orange-500">Real-World Example:</strong> An electrician needs to take a voltage reading inside a live cabinet. Before their hands cross the Restricted Boundary, they must have an approved plan, wear the correct rubber gloves with leather protectors, and use insulated testing probes.</div>`
+                },
+                'Prohibited': {
+                    name: 'Prohibited',
+                    desc: 'A legacy term, now treated as being as dangerous as direct contact with a live part.',
+                    details: `<p>The <strong>Prohibited Approach Boundary</strong> was a term from older standards that meant a distance so close it was considered the same as touching the live equipment. This term has been removed from NFPA 70E to simplify the rules, but the extreme danger it represented is now managed within the Restricted Boundary.</p>
+                              <div class="mt-4 pt-3 border-t border-gray-700"><h4 class="font-semibold text-lg text-gray-100">Key Takeaways</h4><ul class="list-disc list-inside mt-2 space-y-1 text-base"><li>This is a legacy term for the most dangerous space.</li><li>It is now managed by the rules of the Restricted Boundary.</li><li>The danger is equivalent to direct contact.</li></ul></div>
+                              <div class="mt-4 pt-3 border-t border-gray-700"><h4 class="font-semibold text-lg text-gray-100">Required Actions & PPE</h4><p class="text-base">All the requirements of the Restricted Boundary (work permit, planning, shock PPE) are designed to prevent a worker from ever reaching this point of extreme danger.</p></div>
+                              <div class="mt-4 p-3 bg-gray-800 rounded-lg"><strong class="text-red-500">Real-World Example:</strong> The safety rules for working inside the Restricted Boundary are so strict precisely to avoid the consequences of entering what was once called the Prohibited space—immediate and severe electric shock.</div>`
+                },
+                'voltage': {
+                    name: 'System Voltage',
+                    desc: 'The electrical potential difference of the system.',
+                    details: `<p><strong>System Voltage</strong> is the electrical potential difference. In arc flash calculations, voltage primarily determines the shock approach boundaries (Limited and Restricted). While it has a lesser direct impact on arc flash incident energy in low voltage systems (208V-1000V) compared to fault current and clearing time, it's a critical factor for shock hazard assessment.</p>
+                              <div class="mt-4 pt-3 border-t border-gray-700"><h4 class="font-semibold text-lg text-gray-100">Key Takeaways</h4><ul class="list-disc list-inside mt-2 space-y-1"><li>Higher voltages generally lead to larger shock boundaries.</li><li>Crucial for determining shock hazard levels.</li><li>This tool focuses on low voltage systems (208V to 1000V).</li></ul></div>`
+                },
+                'fault-current': {
+                    name: 'Bolted Fault Current',
+                    desc: 'The maximum current that would flow if a direct short circuit occurred.',
+                    details: `<p><strong>Bolted Fault Current</strong> represents the maximum current that could flow during a direct short circuit. This is a primary factor in determining the potential energy released during an arc flash. A higher bolted fault current means more energy is available to be converted into arc flash energy, leading to a more severe arc flash event.</p>
+                              <div class="mt-4 pt-3 border-t border-gray-700"><h4 class="font-semibold text-lg text-gray-100">Key Takeaways</h4><ul class="list-disc list-inside mt-2 space-y-1"><li>Directly proportional to the potential arc flash energy.</li><li>Higher values result in higher incident energy and larger arc flash boundaries.</li><li>Represents the "fuel" for an arc flash.</li></ul></div>`
+                },
+                'clearing-time': {
+                    name: 'Clearing Time',
+                    desc: 'The time it takes for protective devices to interrupt the fault current.',
+                    details: `<p><strong>Clearing Time</strong> is the duration from the initiation of an arc fault until the protective device (like a circuit breaker or fuse) completely interrupts the current. This is arguably the most critical factor in arc flash energy calculations. Even a small reduction in clearing time can significantly decrease the total energy released, as arc flash energy is directly proportional to the duration of the arc.</p>
+                              <div class="mt-4 pt-3 border-t border-gray-700"><h4 class="font-semibold text-lg text-gray-100">Key Takeaways</h4><ul class="list-disc list-inside mt-2 space-y-1"><li>The most significant factor affecting arc flash incident energy.</li><li>Shorter clearing times drastically reduce arc flash energy.</li><li>Reflects the speed of the upstream protective device.</li></ul></div>`
+                },
+                'configuration': {
+                    name: 'Equipment Configuration',
+                    desc: 'The physical arrangement of conductors and barriers within the equipment.',
+                    details: `<p><strong>Equipment Configuration</strong> refers to the physical arrangement of conductors (e.g., vertical, horizontal) and the presence of barriers within the electrical equipment. Different configurations affect how the arc plasma expands and how energy is radiated, influencing the calculated incident energy. IEEE 1584 provides specific models for common configurations like Vertical Conductors in a Box (VCB), Vertical Conductors in a Box with Barrier (VCBB), and Horizontal Conductors in a Box (HCB).</p>
+                              <div class="mt-4 pt-3 border-t border-gray-700"><h4 class="font-semibold text-lg text-gray-100">Key Takeaways</h4><ul class="list-disc list-inside mt-2 space-y-1"><li>Influences how arc energy propagates.</li><li>Specific models are used for different arrangements.</li><li>Can significantly alter incident energy results.</li></ul></div>`
+                },
+                'working-distance': {
+                    name: 'Working Distance',
+                    desc: 'The distance from the potential arc source to the worker\'s face and chest.',
+                    details: `<p><strong>Working Distance</strong> is the distance from the potential arc source to the worker's face and chest. This is a crucial factor because arc flash incident energy dissipates rapidly with distance. Doubling the working distance can reduce the incident energy by a factor of four. Therefore, maintaining a safe working distance is one of the most effective ways to reduce arc flash exposure.</p>
+                              <div class="mt-4 pt-3 border-t border-gray-700"><h4 class="font-semibold text-lg text-gray-100">Key Takeaways</h4><ul class="list-disc list-inside mt-2 space-y-1"><li>Incident energy decreases significantly with increased distance.</li><li>A greater working distance means lower incident energy exposure.</li><li>Always work from the safest possible distance.</li></ul></div>`
+                }
+            };
+
+            // SPARK ANIMATION SETUP
+            const canvas = document.getElementById('spark-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            
+            function resizeCanvas() {
+                const container = canvas.parentElement;
+                canvas.width = container.clientWidth;
+                canvas.height = container.clientHeight;
+            }
+            
+            class Particle {
+                constructor(x, y) {
+                    this.x = x; this.y = y; this.size = Math.random() * 3 + 1;
+                    this.speedX = (Math.random() - 0.5) * 4; this.speedY = (Math.random() - 0.5) * 4;
+                    this.color = `rgba(250, 204, 21, ${Math.random() * 0.5 + 0.5})`; this.life = 100;
+                }
+                update() { this.x += this.speedX; this.y += this.speedY; this.life -= 1.5; }
+                draw() {
+                    ctx.fillStyle = this.color; ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+                }
+            }
+            
+            function animateSparks() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach((p, i) => {
+                    p.update(); p.draw();
+                    if (p.life < 0) particles.splice(i, 1);
+                });
+                if (particles.length < 150) {
+                    for(let i = 0; i < 5; i++) {
+                        particles.push(new Particle(canvas.width / 2, canvas.height / 2));
+                    }
+                }
+                requestAnimationFrame(animateSparks);
+            }
+
+            // BOUNDARY CALCULATION LOGIC
+            const approachBoundariesData = [
+                { maxV: 50, limited: 10.0, restricted: 0, prohibited: 0 },
+                { maxV: 750, limited: 3.5, restricted: 1.0, prohibited: 0.1 },
+                { maxV: 15000, limited: 5.0, restricted: 2.2, prohibited: 0.6 },
+                { maxV: 36000, limited: 6.0, restricted: 2.6, prohibited: 0.8 },
+            ];
+            
+            // IEEE 1584-2018 Coefficients for Low Voltage systems (208V to 1000V)
+            const IEEE1584_CONSTANTS = {
+                VCB: { A: -0.153, B: 0.983, C: 0, D: 0, E: -0.555, F: 0.973, G: 0, H: 0, J: 0.061, K: -0.092, L: 0.389, M: -0.098, X: 1.473 },
+                VCBB: { A: -0.02, B: 0.901, C: 0, D: 0, E: -0.597, F: 1.068, G: 0, H: 0, J: 0.103, K: -0.054, L: 0.345, M: -0.059, X: 1.473 },
+                HCB: { A: 0.179, B: 0.82, C: 0, D: 0, E: -0.738, F: 1.081, G: 0, H: 0, J: 0.173, K: -0.063, L: 0.236, M: -0.02, X: 1.473 },
+            };
+
+            function getApproachBoundaries(voltage) {
+                const found = approachBoundariesData.find(r => voltage <= r.maxV);
+                return found || { limited: 8.0, restricted: 3.0, prohibited: 1.0 };
+            }
+            
+            function calculateArcFlash(params) {
+                const { voltage, boltedFaultCurrent, clearingTime, configuration, workingDistanceInches } = params;
+                const C = IEEE1584_CONSTANTS[configuration];
+                if (!C) return { incidentEnergy: 0, afb: 0 };
+
+                // Use typical fixed values for physical parameters
+                const G = 25;   // Conductor Gap: 25 mm
+                const W = 508;  // Enclosure Width: 508 mm (20 in)
+                const H = 508;  // Enclosure Height: 508 mm (20 in)
+                const D = 203;  // Enclosure Depth: 203 mm (8 in)
+                
+                const V = voltage / 1000; // Voltage in kV
+                const Ibf = boltedFaultCurrent; // kA
+                const T = clearingTime; // seconds
+                const workingDistanceMm = workingDistanceInches * 25.4; // Convert inches to mm
+                const boundaryEnergy = 1.2; // cal/cm2
+                
+                // Arcing Current (Iarc)
+                const logIarc = C.A + (C.B * Math.log10(Ibf)) + (C.C * Math.log10(V)) + (C.D * Math.log10(G));
+                const Iarc = Math.pow(10, logIarc);
+                
+                // Normalized Incident Energy (En)
+                const logEn = C.E + (C.F * Math.log10(Iarc)) + (C.G * Math.log10(V)) + (C.H * Math.log10(G));
+                const En = Math.pow(10, logEn);
+
+                // Enclosure Size Correction Factor (Cf)
+                const Cf = C.J + (C.K * Math.log10(W)) + (C.L * Math.log10(H)) + (C.M * Math.log10(D));
+
+                // Incident Energy (E) in J/cm^2
+                const E_Joules = En * Cf * (T / 0.2) * Math.pow(610 / workingDistanceMm, C.X);
+                const incidentEnergy = E_Joules / 4.184; // Convert to cal/cm^2
+
+                // Arc Flash Boundary (AFB)
+                const AFB_mm = Math.pow(
+                    (En * Cf * (T / 0.2) * Math.pow(610, C.X)) / (boundaryEnergy * 4.184),
+                    1 / C.X
+                );
+                const afbInFeet = AFB_mm / 304.8;
+
+                return { 
+                    incidentEnergy: Math.min(incidentEnergy, 100), 
+                    afb: Math.min(afbInFeet, 100) 
+                };
+            }
+            
+            function getPPEDetails(incidentEnergy) {
+                if (incidentEnergy < 1.2) {
+                    return {
+                        cat: 'N/A',
+                        desc: "Incident energy is below 1.2 cal/cm2. Arc-rated PPE is not required for arc flash protection, but shock protection may still be necessary.",
+                        colorClass: 'bg-green-500',
+                        suggestion: "Maintain safe working practices. Consider de-energizing if possible."
+                    };
+                }
+                if (incidentEnergy <= 4) {
+                    return {
+                        cat: 1,
+                        desc: "Minimum arc-rated clothing (e.g., 4 cal/cm2 shirt and pants), arc-rated face shield, hard hat, safety glasses, hearing protection, leather gloves.",
+                        colorClass: 'bg-yellow-500',
+                        suggestion: "Ensure all PPE is properly worn and rated for at least 4 cal/cm2. Always verify equipment status."
+                    };
+                }
+                if (incidentEnergy <= 8) {
+                    return {
+                        cat: 2,
+                        desc: "Arc-rated clothing (e.g., 8 cal/cm2 coveralls or layered system), arc flash hood or face shield/balaclava combo, hard hat, safety glasses, hearing protection, voltage-rated gloves with leather protectors.",
+                        colorClass: 'bg-orange-500',
+                        suggestion: "This level requires careful planning. Double-check all PPE ratings and ensure proper fit. Consider reducing fault current or clearing time if feasible."
+                    };
+                }
+                if (incidentEnergy <= 25) {
+                    return {
+                        cat: 3,
+                        desc: "Arc-rated clothing (e.g., 25 cal/cm2 arc flash suit), arc flash hood, hard hat, safety glasses, hearing protection, voltage-rated gloves with leather protectors, arc-rated footwear.",
+                        colorClass: 'bg-red-500',
+                        suggestion: "High hazard. Strict adherence to safety procedures is critical. Explore engineering controls to reduce incident energy before proceeding."
+                    };
+                }
+                // incidentEnergy > 25
+                return {
+                    cat: 4,
+                    desc: "Arc-rated clothing (e.g., 40+ cal/cm2 arc flash suit), arc flash hood, hard hat, safety glasses, hearing protection, voltage-rated gloves with leather protectors, arc-rated footwear.",
+                    colorClass: 'bg-purple-700',
+                    suggestion: "Extreme hazard. De-energizing is highly recommended. If not possible, a detailed job hazard analysis and specialized procedures are mandatory. Consider remote operation."
+                };
+            }
+
+            // UI UPDATE LOGIC
+            function updateUI() {
+                const params = {
+                    voltage: parseFloat(voltageSlider.value),
+                    boltedFaultCurrent: parseFloat(faultCurrentSlider.value),
+                    clearingTime: parseFloat(clearingTimeSlider.value),
+                    configuration: configSelect.value,
+                    workingDistanceInches: parseFloat(workingDistanceSlider.value),
+                };
+
+                voltageValue.textContent = `${Math.round(params.voltage)} V`;
+                faultCurrentValue.textContent = `${params.boltedFaultCurrent.toFixed(1)} kA`;
+                clearingTimeValue.textContent = `${params.clearingTime.toFixed(2)} s`;
+                workingDistanceValue.textContent = `${params.workingDistanceInches} in`;
+
+                const approach = getApproachBoundaries(params.voltage);
+                const arcFlash = calculateArcFlash(params);
+                const ppe = getPPEDetails(arcFlash.incidentEnergy);
+
+                incidentEnergyValue.textContent = `${arcFlash.incidentEnergy.toFixed(1)} cal/cm2`;
+                ppeCategoryValue.textContent = ppe.cat;
+                ppeDescription.textContent = ppe.desc;
+                ppeSuggestion.textContent = ppe.suggestion;
+                
+                // Update PPE category dot color
+                ppeCategoryDot.className = `w-4 h-4 rounded-full mr-2 ${ppe.colorClass}`;
+                
+                incidentEnergyDistanceInfo.textContent = `(at ${params.workingDistanceInches}-inch working distance)`;
+
+                const boundaries = [
+                    { name: 'Arc Flash', distance: arcFlash.afb, color: 'blue-400', circle: afbCircle, label: labels.afb, 
+                      desc: 'The minimum safe distance to prevent a second-degree burn if an arc flash occurs. Anyone crossing this boundary must wear appropriate Arc-Rated PPE.',
+                      details: boundaryInfo['Arc Flash'].details },
+                    { name: 'Limited', distance: approach.limited, color: 'yellow-400', circle: limitedCircle, label: labels.limited, 
+                      desc: 'An approach limit for unqualified persons to protect them from shock hazards.',
+                      details: boundaryInfo['Limited'].details },
+                    { name: 'Restricted', distance: approach.restricted, color: 'orange-500', circle: restrictedCircle, label: labels.restricted, 
+                      desc: 'An area with increased shock risk that requires qualified persons, specific PPE, and a work plan to enter.',
+                      details: boundaryInfo['Restricted'].details },
+                    { name: 'Prohibited', distance: approach.prohibited, color: 'red-500', circle: prohibitedCircle, label: labels.prohibited, 
+                      desc: 'A legacy term, now treated as being as dangerous as direct contact with a live part.',
+                      details: boundaryInfo['Prohibited'].details }
+                ];
+
+                const containerSize = afbCircle.parentElement.clientWidth;
+                const maxDistance = Math.max(...boundaries.map(b => b.distance), 5);
+                const scaleFactor = (containerSize * 0.95) / (maxDistance * 2);
+
+                boundaries.forEach(b => {
+                    const size = Math.max(b.distance * 2 * scaleFactor, 10);
+                    b.circle.style.width = `${size}px`; b.circle.style.height = `${size}px`;
+                    // Position labels relative to the top of the circle, adjusted for visibility
+                    const labelOffset = size / 2 + 10;
+                    b.label.style.top = `${(containerSize / 2) - labelOffset}px`;
+                    b.label.style.left = `50%`;
+                });
+
+                explanationPanel.innerHTML = boundaries.sort((a, b) => b.distance - a.distance).map(b => `
+                    <div class="p-4 rounded-lg border border-gray-800 bg-gray-900/50 boundary-card">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-3 h-3 rounded-full flex-shrink-0 bg-${b.color}"></div>
+                                <h3 class="font-bold text-lg md:text-xl text-${b.color}">${b.name} Boundary</h3>
+                                <button class="info-btn text-gray-400 hover:text-white" data-title="${b.name} Boundary" data-details="${b.details.replace(/"/g, '&quot;')}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <p class="font-mono text-xl md:text-2xl text-white">${b.distance.toFixed(2)} ft</p>
+                        </div>
+                        <p class="text-sm md:text-base text-gray-400 mt-2 pl-6">${b.desc}</p>
+                    </div>
+                `).join('');
+            }
+
+            // MODAL LOGIC
+            function showModal(title, content) {
+                modalTitle.textContent = title;
+                modalContent.innerHTML = content;
+                modalBackdrop.style.display = 'block';
+                modal.style.display = 'block';
+                setTimeout(() => {
+                    modalBackdrop.style.opacity = '1';
+                    modal.style.opacity = '1';
+                    modal.style.transform = 'translate(-50%, -50%) scale(1)';
+                }, 10);
+            }
+
+            function hideModal() {
+                modalBackdrop.style.opacity = '0';
+                modal.style.opacity = '0';
+                modal.style.transform = 'translate(-50%, -50%) scale(0.95)';
+                setTimeout(() => {
+                    modalBackdrop.style.display = 'none';
+                    modal.style.display = 'none';
+                }, 300);
+            }
+
+            explanationPanel.addEventListener('click', (e) => {
+                const infoBtn = e.target.closest('.info-btn');
+                if (infoBtn) {
+                    const title = infoBtn.dataset.title;
+                    const details = infoBtn.dataset.details;
+                    showModal(title, details);
+                }
+            });
+
+            modalCloseBtn.addEventListener('click', hideModal);
+            modalBackdrop.addEventListener('click', hideModal);
+
+            // INTERACTIVE HAZARD LABEL CLICK LISTENERS
+            labels.afb.addEventListener('click', () => {
+                showModal(boundaryInfo['Arc Flash'].name + ' Boundary', boundaryInfo['Arc Flash'].details);
+            });
+            labels.limited.addEventListener('click', () => {
+                showModal(boundaryInfo['Limited'].name + ' Boundary', boundaryInfo['Limited'].details);
+            });
+            labels.restricted.addEventListener('click', () => {
+                showModal(boundaryInfo['Restricted'].name + ' Boundary', boundaryInfo['Restricted'].details);
+            });
+            labels.prohibited.addEventListener('click', () => {
+                showModal(boundaryInfo['Prohibited'].name + ' Boundary', boundaryInfo['Prohibited'].details);
+            });
+
+            // Parameter info buttons
+            document.querySelectorAll('.info-btn[data-param]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const param = btn.getAttribute('data-param');
+                    if (boundaryInfo[param]) {
+                        showModal(boundaryInfo[param].name, boundaryInfo[param].details);
+                    }
+                });
+            });
+
+            // INITIALIZATION AND EVENT LISTENERS
+            const allControls = [voltageSlider, faultCurrentSlider, clearingTimeSlider, configSelect, workingDistanceSlider];
+            allControls.forEach(control => {
+                control.addEventListener('input', updateUI);
+            });
+            
+            window.addEventListener('resize', () => { 
+                resizeCanvas(); 
+                updateUI(); 
+            });
+
+            resizeCanvas();
+            updateUI();
+            animateSparks();
+        });
+    </script>
+</body>
+</html>
