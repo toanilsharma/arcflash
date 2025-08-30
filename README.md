@@ -3,7 +3,7 @@
 A web-based platform to **learn, visualize, and calculate Arc Flash boundaries** based on **NFPA 70E, IEEE 1584, and IEC standards**.  
 The project makes arc flash safety concepts simple and practical for engineers, students, and workers through interactive animations, calculators, and guidelines.
 
-🔗 **Live Demo:** [https://arcflashboundary.netlify.app](https://arcflashboundary.netlify.app)
+🔗 **Live Demo:** [https://arcflashinfo.netlify.app](https://arcflashinfo.netlify.app)
 
 ---
 
