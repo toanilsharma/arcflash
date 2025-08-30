@@ -282,6 +282,48 @@
                 display: none;
             }
         }
+
+        /* Styles for Electrical Safety Boundaries Section */
+        .tab-button.active {
+            background-color: #0ea5e9; /* Sky 500 */
+            color: #020617; /* Slate 950 */
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .border-afb { border-color: #38bdf8; /* Sky 500 */ }
+        .border-limited { border-color: #facc15; /* Yellow 400 */ }
+        .border-restricted { border-color: #f97316; /* Orange 500 */ }
+
+        .info-icon {
+            flex-shrink: 0;
+            width: 3rem; /* 48px */
+            height: 3rem; /* 48px */
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .example-card {
+            background-color: #0f172a; /* Slate 900 */
+            border-left: 4px solid;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -301,7 +343,7 @@
                     A comprehensive guide and interactive tool for mastering arc flash safety.
                 </p>
                 <a href="#intro" class="inline-block mt-12 text-lg font-bold bg-sky-400 text-slate-900 px-8 py-4 rounded-full shadow-[0_0_20px_theme(colors.sky.500)] hover:bg-sky-300 transition-all duration-300">
-                    Enter the Hazard Zone ＞
+                    Enter the Hazard Zone
                 </a>
             </div>
         </header>
@@ -444,6 +486,147 @@
             </div>
         </section>
 
+        <!-- ELECTRICAL SAFETY BOUNDARIES EXPLAINED SECTION -->
+        <section class="my-24 md:my-48 reveal-on-scroll">
+            <h2 class="text-4xl md:text-6xl font-bold text-center mb-4 text-sky-300">Understanding the Boundaries</h2>
+            <p class="text-center text-slate-300 max-w-3xl mx-auto mb-16">A simple guide to the three critical boundaries defined by <strong class="text-sky-400">NFPA 70E</strong> and calculated using <strong class="text-sky-400">IEEE 1584</strong>. Understanding these zones is the key to working safely.</p>
+            
+            <div class="glass-card p-6 sm:p-8">
+                <!-- Tab Buttons -->
+                <div class="flex flex-wrap justify-center gap-2 sm:gap-4 mb-8">
+                    <button class="tab-button active py-3 px-6 rounded-full text-base sm:text-lg font-bold transition-all duration-300" data-tab="arc-flash">
+                        Arc Flash Boundary
+                    </button>
+                    <button class="tab-button py-3 px-6 rounded-full text-base sm:text-lg font-bold transition-all duration-300" data-tab="limited-approach">
+                        Limited Approach
+                    </button>
+                    <button class="tab-button py-3 px-6 rounded-full text-base sm:text-lg font-bold transition-all duration-300" data-tab="restricted-approach">
+                        Restricted Approach
+                    </button>
+                </div>
+
+                <!-- Tab Content Panels -->
+                <div id="tab-panels">
+                    <!-- Arc Flash Boundary Content -->
+                    <div id="arc-flash" class="tab-content active">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                            <!-- Icon -->
+                            <div class="md:col-span-2 flex justify-center">
+                                <div class="info-icon bg-sky-500/20 text-sky-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.657 7.343A8 8 0 0117.657 18.657z" /><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 16.121A3 3 0 1014.12 11.88l-4.242 4.242z" /></svg>
+                                </div>
+                            </div>
+                            <!-- Details -->
+                            <div class="md:col-span-10">
+                                <h2 class="text-3xl font-bold text-sky-400 mb-2">Arc Flash Boundary</h2>
+                                <p class="text-xl font-medium text-slate-300 mb-6">The "Keep Safe from Burns" Zone</p>
+                                
+                                <div class="space-y-6">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-white">Key Purpose: Protection from Thermal Hazard (Heat)</h3>
+                                        <p class="text-slate-300">This boundary marks the distance from an arc source where a worker's skin would receive a second-degree burn if an arc flash occurred. The energy level at this boundary is <strong class="text-white">1.2 cal/cm²</strong>. Its primary purpose is to prevent life-threatening burns.</p>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-white">Who can enter?</h3>
+                                        <p class="text-slate-300">Only a <strong class="text-white">Qualified Person</strong> wearing the appropriate Arc-Rated (AR) Personal Protective Equipment (PPE) can cross this boundary.</p>
+                                    </div>
+                                    <div class="example-card border-afb">
+                                        <h4 class="font-bold text-white mb-2">Real-World Example:</h4>
+                                        <p class="text-slate-300">An industrial electrician must open a 480V motor control center. The arc flash label states the Arc Flash Boundary is <strong class="text-sky-400">48 inches</strong>. Before getting any closer, the electrician must put on their full AR suit, including a hood, gloves, and hearing protection, with a rating greater than the calculated incident energy.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Limited Approach Boundary Content -->
+                    <div id="limited-approach" class="tab-content">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                             <!-- Icon -->
+                            <div class="md:col-span-2 flex justify-center">
+                                <div class="info-icon bg-yellow-500/20 text-yellow-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                                </div>
+                            </div>
+                            <!-- Details -->
+                            <div class="md:col-span-10">
+                                <h2 class="text-3xl font-bold text-yellow-400 mb-2">Limited Approach Boundary</h2>
+                                <p class="text-xl font-medium text-slate-300 mb-6">The "Keep Out unless Qualified" Zone</p>
+                                
+                                <div class="space-y-6">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-white">Key Purpose: Protection from Electric Shock</h3>
+                                        <p class="text-slate-300">This is the outer boundary established to protect people from electric shock. It's determined by the system voltage. Think of it as a caution line around energized equipment.</p>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-white">Who can enter?</h3>
+                                        <p class="text-slate-300">Only <strong class="text-white">Qualified Persons</strong> may cross this boundary freely. <strong class="text-white">Unqualified Persons</strong> (like painters, janitors, or operators) must stay outside unless they are escorted and continuously monitored by a Qualified Person.</p>
+                                    </div>
+                                    <div class="example-card border-limited">
+                                        <h4 class="font-bold text-white mb-2">Real-World Example:</h4>
+                                        <p class="text-slate-300">A cleaning crew is working in an electrical room. The floor around a large transformer is marked with yellow tape at <strong class="text-yellow-400">3 feet 6 inches</strong>—the Limited Approach Boundary for that voltage. The crew knows they and their cleaning equipment (like mop handles) must never cross that line.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Restricted Approach Boundary Content -->
+                    <div id="restricted-approach" class="tab-content">
+                         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                            <!-- Icon -->
+                            <div class="md:col-span-2 flex justify-center">
+                                <div class="info-icon bg-orange-500/20 text-orange-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                                </div>
+                            </div>
+                            <!-- Details -->
+                            <div class="md:col-span-10">
+                                <h2 class="text-3xl font-bold text-orange-400 mb-2">Restricted Approach Boundary</h2>
+                                <p class="text-xl font-medium text-slate-300 mb-6">The "High Risk of Shock" Zone</p>
+                                
+                                <div class="space-y-6">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-white">Key Purpose: Protection from Arc Flash & Shock at Close Proximity</h3>
+                                        <p class="text-slate-300">This is an inner boundary, closer to the live parts, where there is an increased risk of shock and arc flash initiated by accidental movement. It is a high-danger zone.</p>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-white">Who can enter?</h3>
+                                        <p class="text-slate-300">Only a <strong class="text-white">Qualified Person</strong> who has a documented work plan and is wearing appropriate shock protection (like voltage-rated gloves and tools) can cross this boundary. Unqualified persons are never permitted inside.</p>
+                                    </div>
+                                    <div class="example-card border-restricted">
+                                        <h4 class="font-bold text-white mb-2">Real-World Example:</h4>
+                                        <p class="text-slate-300">An electrician needs to use a multimeter to measure the voltage on a terminal block inside a live panel. The Restricted Approach Boundary is <strong class="text-orange-400">12 inches</strong>. Before their hands cross that 12-inch line, they must be wearing properly tested rubber insulating gloves with leather protectors and using insulated tools.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Takeaways Section -->
+            <section class="mt-12">
+                <h2 class="text-center text-3xl font-bold text-white mb-8">Important Points to Remember</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+                    <div class="glass-card p-6 flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center font-bold text-lg">1</div>
+                        <div>
+                            <h3 class="font-bold text-lg text-white">Shock vs. Burn</h3>
+                            <p class="text-slate-300">The Limited and Restricted boundaries are for <strong class="text-yellow-400">SHOCK</strong> protection. The Arc Flash Boundary is for <strong class="text-sky-400">BURN</strong> protection. Often, the Arc Flash Boundary is much larger than the shock boundaries.</p>
+                        </div>
+                    </div>
+                    <div class="glass-card p-6 flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center font-bold text-lg">2</div>
+                        <div>
+                            <h3 class="font-bold text-lg text-white">Qualified Person is Key</h3>
+                            <p class="text-slate-300">A "Qualified Person" has the skills, training, and safety knowledge to identify and avoid electrical hazards. Being an electrician does not automatically make someone qualified for every task.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+
         <!-- DYNAMIC PPE LOADOUT -->
         <section class="my-24 md:my-48 reveal-on-scroll">
             <h2 class="text-4xl md:text-6xl font-bold text-center mb-4 text-sky-300">Dynamic PPE Loadout</h2>
@@ -486,17 +669,17 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
                 <!-- DO'S Column -->
                 <div class="dos-donts-card border-green-500/50">
-                    <h3 class="text-3xl font-bold text-green-400 mb-6 text-center">DO ✔</h3>
+                    <h3 class="text-3xl font-bold text-green-400 mb-6 text-center">DO</h3>
                     <ul>
                         <li><span class="icon text-green-400"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span><span><strong>De-energize</strong> whenever possible. The only way to guarantee safety is to turn it off.</span></li>
-                        <li><span class="icon text-green-400"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span><span><strong>Inspect your PPE</strong> before every use. Look for rips, burns, or contamination.</span></li>
+                        <li><span class="icon text-green-400"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span><span><strong>Inspect your PPE</strong> before every use. Look for rips, burns or contamination.</span></li>
                         <li><span class="icon text-green-400"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span><span><strong>Use insulated tools</strong> that are properly rated for the voltage you are working with.</span></li>
                         <li><span class="icon text-green-400"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span><span><strong>Establish and respect</strong> the Arc Flash and Shock Protection Boundaries.</span></li>
                     </ul>
                 </div>
                 <!-- DON'TS Column -->
                 <div class="dos-donts-card border-red-500/50">
-                    <h3 class="text-3xl font-bold text-red-400 mb-6 text-center">DON'T ✖</h3>
+                    <h3 class="text-3xl font-bold text-red-400 mb-6 text-center">DON'T</h3>
                     <ul>
                         <li><span class="icon text-red-400"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span><span><strong>Never work alone</strong> on or near energized equipment. Always have a safety observer.</span></li>
                         <li><span class="icon text-red-400"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span><span><strong>Don't wear</strong> clothing made of synthetic materials (like polyester or nylon) that can melt onto your skin.</span></li>
@@ -518,17 +701,19 @@
     </footer>
 
     <!-- Info Modal -->
-    <div id="info-modal-backdrop"></div>
-    <div id="info-modal" class="w-11/12 max-w-2xl bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl">
-        <div class="p-6 md:p-8">
-            <div class="flex justify-between items-center">
-                <h2 id="modal-title" class="text-2xl md:text-3xl font-bold text-white">Boundary Information</h2>
-                <button id="modal-close-btn" class="text-gray-400 hover:text-white transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
+    <div id="info-modal-backdrop" class="fixed inset-0 bg-black bg-opacity-70 z-[999] hidden opacity-0 transition-opacity duration-300"></div>
+<div id="info-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-900 border border-gray-700 rounded-lg shadow-2xl p-6 w-11/12 max-w-2xl z-[1000] hidden opacity-0 scale-95 transition-all duration-300">
+    <!-- The 'relative' class here makes the close button position itself relative to this div -->
+    <div class="relative border-b border-gray-700 pb-3 mb-4">
+        <!-- Added 'pr-10' (padding-right: 2.5rem) to ensure space for the close button -->
+        <h3 id="modal-title" class="text-2xl font-bold text-white pr-10"></h3>
+        <!-- The 'absolute top-0 right-0' classes position the button at the top-right corner -->
+        <button id="modal-close-btn" class="absolute top-0 right-0 text-gray-400 hover:text-white text-3xl leading-none">&times;</button>
+    </div>
+    <div id="modal-content" class="text-gray-300 text-base overflow-y-auto max-h-[70vh]">
+        <!-- Content will be loaded here by JavaScript -->
+    </div>
+</div>
             <div id="modal-content" class="mt-4 text-gray-300 space-y-4 text-lg">
                 <!-- Dynamic content goes here -->
             </div>
@@ -537,6 +722,125 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // ... existing code ...
+
+    // MODAL LOGIC
+    // Get references to your modal elements
+    const modalBackdrop = document.getElementById('info-modal-backdrop');
+    const modal = document.getElementById('info-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalContent = document.getElementById('modal-content');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+
+    let isModalOpen = false; // Flag to track modal state
+
+    function showModal(title, content) {
+        modalTitle.textContent = title;
+        modalContent.innerHTML = content;
+        modalBackdrop.style.display = 'block';
+        modal.style.display = 'block';
+        setTimeout(() => {
+            modalBackdrop.style.opacity = '1';
+            modal.style.opacity = '1';
+            modal.style.transform = 'translate(-50%, -50%) scale(1)';
+        }, 10);
+
+        // Push a new state to history when modal opens, if not already open
+        if (!isModalOpen) {
+            history.pushState({ modalOpen: true }, '', '#modal'); // Adds a history entry
+            isModalOpen = true;
+        }
+    }
+
+    function hideModal() {
+        modalBackdrop.style.opacity = '0';
+        modal.style.opacity = '0';
+        modal.style.transform = 'translate(-50%, -50%) scale(0.95)';
+        setTimeout(() => {
+            modalBackdrop.style.display = 'none';
+            modal.style.display = 'none';
+        }, 300);
+
+        // If the modal was opened via pushState and is currently the active history entry,
+        // go back in history to remove the #modal state. This will trigger popstate.
+        if (isModalOpen && window.location.hash === '#modal') {
+            history.back(); // Navigates back in history
+        }
+        isModalOpen = false;
+    }
+
+    // Handle browser's back/forward button
+    window.addEventListener('popstate', (event) => {
+        if (event.state && event.state.modalOpen) {
+            // User navigated forward to a modal state (e.g., after hitting back then forward)
+            // Re-open the modal visually if it's not already open
+            if (!isModalOpen) {
+                // Re-show with existing content (assuming modalTitle and modalContent still hold it)
+                showModal(modalTitle.textContent, modalContent.innerHTML);
+            }
+        } else {
+            // User navigated back from a modal state, or to a non-modal state
+            // Close the modal visually if it's open
+            if (isModalOpen) {
+                modalBackdrop.style.opacity = '0';
+                modal.style.opacity = '0';
+                modal.style.transform = 'translate(-50%, -50%) scale(0.95)';
+                setTimeout(() => {
+                    modalBackdrop.style.display = 'none';
+                    modal.style.display = 'none';
+                }, 300);
+                isModalOpen = false;
+            }
+        }
+    });
+
+    // ... existing event listeners for opening and closing the modal ...
+    // Ensure these are present and correctly reference the showModal/hideModal functions
+
+    // Example: Event listener for info buttons to open modal
+    document.querySelectorAll('.info-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const infoBtn = e.target.closest('.info-btn');
+            if (infoBtn) {
+                const title = infoBtn.dataset.title || infoBtn.dataset.param; // Use param if title not set
+                const details = infoBtn.dataset.details;
+                showModal(title, details);
+            }
+        });
+    });
+
+    modalCloseBtn.addEventListener('click', hideModal);
+    modalBackdrop.addEventListener('click', hideModal);
+
+    // INTERACTIVE HAZARD LABEL CLICK LISTENERS (ensure these also use showModal)
+    // Assuming 'labels' object is defined elsewhere in your script
+    if (labels && labels.afb) { // Check if labels object exists and has properties
+        labels.afb.addEventListener('click', () => {
+            showModal(boundaryInfo['Arc Flash'].name + ' Boundary', boundaryInfo['Arc Flash'].details);
+        });
+        labels.limited.addEventListener('click', () => {
+            showModal(boundaryInfo['Limited'].name + ' Boundary', boundaryInfo['Limited'].details);
+        });
+        labels.restricted.addEventListener('click', () => {
+            showModal(boundaryInfo['Restricted'].name + ' Boundary', boundaryInfo['Restricted'].details);
+        });
+        labels.prohibited.addEventListener('click', () => {
+            showModal(boundaryInfo['Prohibited'].name + ' Boundary', boundaryInfo['Prohibited'].details);
+        });
+    }
+
+    // Parameter info buttons (ensure these also use showModal)
+    document.querySelectorAll('.info-btn[data-param]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const param = btn.getAttribute('data-param');
+            if (boundaryInfo[param]) {
+                showModal(boundaryInfo[param].name, boundaryInfo[param].details);
+            }
+        });
+    });
+
+    // ... rest of your script.js code ...
+});
             // --- Observer for scroll animations ---
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -643,7 +947,7 @@
                         itemEl.className = 'ppe-checklist-item';
                         let noteHTML = item.note ? `<span class="note">${item.note}</span>` : '';
                         itemEl.innerHTML = `
-                            <svg class="w-6 h-6 mr-3 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <svg class="w-6 h-6 mr-3 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 01118 0z"></path></svg>
                             <span>${item.item}</span>
                             ${noteHTML}
                         `;
@@ -908,7 +1212,7 @@
                 if (incidentEnergy <= 25) {
                     return {
                         cat: 3,
-                        desc: "Arc-rated clothing (e.g., 25 cal/cm2 arc flash suit), arc flash hood, hard hat, safety glasses, hearing protection, voltage-rated gloves with leather protectors, arc-rated footwear.",
+                        desc: "Arc-rated clothing (e.e., 25 cal/cm2 arc flash suit), arc flash hood, hard hat, safety glasses, hearing protection, voltage-rated gloves with leather protectors, arc-rated footwear.",
                         colorClass: 'bg-red-500',
                         suggestion: "High hazard. Strict adherence to safety procedures is critical. Explore engineering controls to reduce incident energy before proceeding."
                     };
@@ -1071,7 +1375,27 @@
             resizeCanvas();
             updateUI();
             animateSparks();
-        });
+
+            // --- Tabbed Interface for Boundary Explanations ---
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Get the target tab from the data attribute
+                    const targetTab = button.dataset.tab;
+
+                    // Deactivate all buttons and hide all content panels
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+
+                    // Activate the clicked button and show the corresponding content
+                    button.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
     </script>
 </body>
 </html>
