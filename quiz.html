@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TV1VF5WCNP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-TV1VF5WCNP');
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arc Flash Safety Quiz</title>
@@ -207,6 +216,10 @@
         <h1 class="text-4xl md:text-5xl font-bold text-center text-sky-300 mb-8">Arc Flash Safety Quiz</h1>
         <p class="text-center text-slate-300 mb-8">Test your knowledge on arc flash safety and electrical boundaries.</p>
 
+        <div class="flex justify-center mb-6">
+            <button id="back-to-tool-btn" class="quiz-button">Back to Learning Tool</button>
+        </div>
+
         <div id="quiz-container">
             <div class="progress-bar-container">
                 <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>
@@ -241,7 +254,7 @@
             <div class="flex justify-center items-center gap-4 mb-8">
                 <button id="retake-btn" class="quiz-button">Retake Quiz</button>
                 <button id="review-btn" class="quiz-button">Review Answers</button>
-                <button id="back-to-tool-btn" class="quiz-button">Back to Learning Tool</button>
+                <!-- The 'Back to Learning Tool' button was moved from here -->
             </div>
 
             <div id="review-container" class="hidden">
