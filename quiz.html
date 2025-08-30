@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arc Flash Safety Quiz</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base body styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* slate-900 */
+            color: #e2e8f0; /* slate-200 */
+            line-height: 1.6;
+            background-image: radial-gradient(circle at 20% 80%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+                              radial-gradient(circle at 80% 20%, rgba(250, 204, 21, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+        
+        /* Glassmorphism card effect */
+        .glass-card {
+            background-color: rgba(30, 41, 59, 0.7); /* slate-800 with transparency */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(71, 85, 105, 0.5); /* slate-600 with transparency */
+            border-radius: 1rem; /* rounded-xl */
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Base button styles */
+        .quiz-button {
+            background-color: #0284c7; /* bg-sky-600 */
+            color: white;
+            font-weight: 700;
+            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            border-radius: 0.5rem; /* rounded-lg */
+            transition: background-color 0.2s, transform 0.1s;
+            cursor: pointer;
+        }
+        .quiz-button:hover {
+            background-color: #0369a1; /* hover:bg-sky-700 */
+        }
+        .quiz-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .quiz-button:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .option-button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem 1rem; /* py-3 px-4 */
+            border-radius: 0.375rem; /* rounded-md */
+            border: 1px solid #334155; /* border-slate-700 */
+            background-color: #1e293b; /* bg-slate-800 */
+            transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+            margin-bottom: 0.75rem; /* mb-3 */
+        }
+        .option-button:hover:not(:disabled) {
+             background-color: #334155; /* hover:bg-slate-700 */
+        }
+        .option-button:active:not(:disabled) {
+            transform: scale(0.99);
+        }
+
+        /* Dynamic classes for option states */
+        .option-button.selected {
+            border-color: #38bdf8; /* border-sky-400 */
+            background-color: rgba(12, 74, 110, 0.5); /* bg-sky-900/50 */
+        }
+        .option-button.correct {
+            background-color: #166534; /* Darker Green for better contrast */
+            border-color: #22c55e; /* border-green-500 */
+            color: white;
+            animation: flash-correct 0.5s ease-out;
+        }
+        .option-button.incorrect {
+            background-color: #991b1b; /* Darker Red */
+            border-color: #ef4444; /* border-red-500 */
+            color: white;
+            animation: flash-incorrect 0.5s ease-out;
+        }
+        
+        /* Feedback message styling */
+        .feedback-message {
+            margin-top: 1rem; /* mt-4 */
+            padding: 0.75rem; /* p-3 */
+            border-radius: 0.375rem; /* rounded-md */
+            font-weight: 600;
+        }
+        .feedback-message.correct {
+            background-color: rgba(22, 163, 74, 0.2); /* bg-green-600/20 */
+            color: #4ade80; /* text-green-400 */
+        }
+        .feedback-message.incorrect {
+            background-color: rgba(220, 38, 38, 0.2); /* bg-red-600/20 */
+            color: #f87171; /* text-red-400 */
+        }
+        .feedback-message.warning {
+             background-color: rgba(234, 179, 8, 0.2); /* bg-yellow-500/20 */
+             color: #facc15; /* text-yellow-400 */
+        }
+
+        /* Progress bar styling */
+        .progress-bar-container {
+            width: 100%;
+            background-color: #334155; /* bg-slate-700 */
+            border-radius: 9999px; /* rounded-full */
+            height: 0.625rem; /* h-2.5 */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        .progress-bar {
+            background-color: #38bdf8; /* bg-sky-400 */
+            height: 0.625rem; /* h-2.5 */
+            border-radius: 9999px; /* rounded-full */
+            transition: width 0.3s ease-out;
+        }
+
+        /* Score Graph Styling */
+        .score-graph-container {
+            width: 80%;
+            background-color: #334155; /* bg-slate-700 */
+            border-radius: 9999px; /* rounded-full */
+            height: 1.5rem;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        .score-bar {
+            background-color: #22c55e; /* Green for correct */
+            height: 100%;
+            border-radius: 9999px; /* rounded-full */
+            transition: width 0.5s ease-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        /* Review Section Styling */
+        #review-container {
+            margin-top: 2rem;
+            text-align: left;
+            border-top: 1px solid #334155; /* border-slate-700 */
+            padding-top: 1.5rem;
+        }
+        .review-item {
+            background-color: rgba(30, 41, 59, 0.5); /* slate-800/50 */
+            border-left: 4px solid #475569; /* border-slate-600 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .review-item p { margin: 0; }
+        .review-item .review-question { font-weight: bold; color: #cbd5e1; /* slate-300 */ }
+        .review-item .review-user-answer { color: #f87171; /* text-red-400 */ }
+        .review-item .review-correct-answer { color: #4ade80; /* text-green-400 */ }
+
+        /* Social Share Buttons */
+        .social-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 9999px; /* rounded-full */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .social-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+        .social-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+        .twitter { background-color: #1DA1F2; }
+        .facebook { background-color: #1877F2; }
+        .linkedin { background-color: #0A66C2; }
+        .whatsapp { background-color: #25D366; }
+
+        /* Animation Keyframes */
+        @keyframes flash-correct {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+            50% { box-shadow: 0 0 10px 4px rgba(34, 197, 94, 0.5); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+        @keyframes flash-incorrect {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+            50% { box-shadow: 0 0 10px 4px rgba(239, 68, 68, 0.5); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+    <main class="w-full max-w-3xl mx-auto glass-card p-8 md:p-10 my-8">
+        <h1 class="text-4xl md:text-5xl font-bold text-center text-sky-300 mb-8">Arc Flash Safety Quiz</h1>
+        <p class="text-center text-slate-300 mb-8">Test your knowledge on arc flash safety and electrical boundaries.</p>
+
+        <div id="quiz-container">
+            <div class="progress-bar-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>
+            </div>
+            <div id="question-display" class="mb-6">
+                <p class="text-xl font-semibold text-white mb-4" id="question-text"></p>
+                <div id="options-container">
+                    <!-- Options will be loaded here by JavaScript -->
+                </div>
+            </div>
+
+            <div id="feedback" class="feedback-message hidden"></div>
+
+            <div class="flex justify-between mt-6">
+                <button id="prev-btn" class="quiz-button" disabled>Previous</button>
+                <button id="next-btn" class="quiz-button">Check Answer</button>
+            </div>
+        </div>
+
+        <div id="results-container" class="hidden text-center">
+            <h2 class="text-3xl font-bold text-sky-300 mb-4">Quiz Complete!</h2>
+            <p class="text-2xl text-white mb-6">You scored: <span id="score-display" class="font-bold text-sky-400"></span></p>
+            
+            <div class="flex justify-center mb-6">
+                <div class="score-graph-container">
+                    <div id="score-bar" class="score-bar" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <p id="motivational-message" class="text-xl text-slate-300 mb-8 font-semibold"></p>
+            
+            <div class="flex justify-center items-center gap-4 mb-8">
+                <button id="retake-btn" class="quiz-button">Retake Quiz</button>
+                <button id="review-btn" class="quiz-button">Review Answers</button>
+                <button id="back-to-tool-btn" class="quiz-button">Back to Learning Tool</button>
+            </div>
+
+            <div id="review-container" class="hidden">
+                <h3 class="text-2xl font-bold text-white mb-4">Review Your Answers</h3>
+                <!-- Incorrect answers will be loaded here -->
+            </div>
+
+             <!-- NEW FOOTER SECTION -->
+            <div class="mt-8 pt-6 border-t border-slate-700">
+                <p class="text-lg text-slate-300 mb-4">Share Your Score!</p>
+                <div id="share-buttons" class="flex justify-center items-center gap-4">
+                    <!-- Twitter (X) -->
+                    <button id="share-twitter" class="social-btn twitter" title="Share on X">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg>
+                    </button>
+                    <!-- Facebook -->
+                    <button id="share-facebook" class="social-btn facebook" title="Share on Facebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"/></svg>
+                    </button>
+                    <!-- LinkedIn -->
+                    <button id="share-linkedin" class="social-btn linkedin" title="Share on LinkedIn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"/></svg>
+                    </button>
+                    <!-- WhatsApp -->
+                    <button id="share-whatsapp" class="social-btn whatsapp" title="Share on WhatsApp">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.8 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+                    </button>
+                </div>
+                <p class="text-sm text-slate-400 mt-6">Created by Anil Sharma</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const questions = [
+            // All 50 questions from previous state are included here
+            {
+                question: "Which of the following is arguably the most critical factor in arc flash energy calculations?",
+                options: ["System Voltage", "Bolted Fault Current", "Clearing Time", "Working Distance"],
+                answer: "Clearing Time",
+                info: "Clearing Time is the duration from the initiation of an arc fault until the protective device completely interrupts the current. Even a small reduction can significantly decrease total energy."
+            },
+            {
+                question: "What is the incident energy level at the Arc Flash Boundary?",
+                options: ["0.5 cal/cm²", "1.2 cal/cm²", "4.0 cal/cm²", "8.0 cal/cm²"],
+                answer: "1.2 cal/cm²",
+                info: "The Arc Flash Boundary marks the distance where a worker's skin would receive a second-degree burn, with an energy level of 1.2 cal/cm²."
+            },
+            {
+                question: "Which PPE category is required for an incident energy of 10 cal/cm²?",
+                options: ["CAT 1", "CAT 2", "CAT 3", "CAT 4"],
+                answer: "CAT 3",
+                info: "CAT 3 PPE is required for incident energies up to 25 cal/cm². CAT 2 goes up to 8 cal/cm²."
+            },
+            {
+                question: "According to the Hierarchy of Controls, what is the most effective method for hazard control?",
+                options: ["PPE", "Engineering Controls", "Substitution", "Elimination"],
+                answer: "Elimination",
+                info: "Elimination (e.g., de-energizing) is at the top of the Hierarchy of Controls, making it the most effective."
+            },
+            {
+                question: "What is the primary purpose of the Limited Approach Boundary?",
+                options: ["Protection from arc flash burns", "Protection from electric shock", "To define the working distance", "To determine PPE category"],
+                answer: "Protection from electric shock",
+                info: "The Limited Approach Boundary is established to protect people from electric shock."
+            },
+            {
+                question: "Which type of clothing should NOT be worn when working near energized equipment due to arc flash hazards?",
+                options: ["Cotton", "Wool", "Synthetic materials (e.g., polyester)", "Arc-rated clothing"],
+                answer: "Synthetic materials (e.g., polyester)",
+                info: "Don't wear clothing made of synthetic materials (like polyester or nylon) that can melt onto your skin."
+            },
+            {
+                question: "Doubling the working distance can reduce the incident energy by a factor of:",
+                options: ["Two", "Three", "Four", "Five"],
+                answer: "Four",
+                info: "Incident energy decreases with the square of the distance. Doubling the distance reduces energy by a factor of four."
+            },
+            {
+                question: "Who can cross the Restricted Approach Boundary?",
+                options: ["Any worker with basic safety training", "Only a Qualified Person with a documented work plan and appropriate shock protection", "Unqualified persons if escorted", "Only supervisors"],
+                answer: "Only a Qualified Person with a documented work plan and appropriate shock protection",
+                info: "Only a Qualified Person who has a documented work plan and is wearing appropriate shock protection can cross this boundary."
+            },
+            {
+                question: "What is the 'last line of defense' in the Hierarchy of Controls?",
+                options: ["Elimination", "Engineering Controls", "Awareness", "PPE"],
+                answer: "PPE",
+                info: "PPE is considered the last line of defense in the Hierarchy of Controls."
+            },
+            {
+                question: "What is the standard unit used to measure Incident Energy in arc flash calculations, as displayed in this tool?",
+                options: ["Joules", "Watts", "cal/cm²", "Amperes"],
+                answer: "cal/cm²",
+                info: "Incident Energy is measured in calories per square centimeter (cal/cm²)."
+            },
+            {
+                question: "An arc flash explosion can be four times hotter than what?",
+                options: ["A volcano", "A lightning bolt", "The sun's surface", "A blast furnace"],
+                answer: "The sun's surface",
+                info: "The learning tool introduction states an arc flash can be 'four times hotter than the sun's surface'."
+            },
+            {
+                question: "The introduction says an arc flash happens in less time than a what?",
+                options: ["Blink of an eye", "Camera flash", "Heartbeat", "Snap of the fingers"],
+                answer: "Camera flash",
+                info: "The tool describes the speed of an arc flash as 'less time than a camera flash'."
+            },
+            {
+                question: "Which electrical safety standard is mentioned as a key reference for the safety boundaries?",
+                options: ["OSHA 1910", "NFPA 70E", "IEEE 1584", "NEC"],
+                answer: "NFPA 70E",
+                info: "The tool states the boundaries are defined by 'NFPA 70E'."
+            },
+            {
+                question: "A 'Qualified Person' is defined as someone who has the skills and training to identify and avoid what?",
+                options: ["Any workplace danger", "Electrical hazards", "Fire hazards", "Chemical spills"],
+                answer: "Electrical hazards",
+                info: "A Qualified Person is specifically trained to recognize and avoid electrical hazards."
+            },                 
+            {
+                question: "What is the primary purpose of the Arc Flash Boundary?",
+                options: ["Protection from loud noise", "Protection from electric shock", "Protection from Thermal Hazard (Heat)", "To mark the work area"],
+                answer: "Protection from Thermal Hazard (Heat)",
+                info: "The Arc Flash Boundary's key purpose is to protect workers from the thermal hazard (burns) of an arc flash."
+            },
+            {
+                question: "Can an unqualified person, like a janitor, cross the Limited Approach Boundary if they are unescorted?",
+                options: ["Yes, if they are careful", "Yes, during off-hours", "No, never", "Only if they have a work order"],
+                answer: "No, never",
+                info: "Unqualified persons must be escorted by a Qualified Person to cross the Limited Approach Boundary."
+            },
+            {
+                question: "The Restricted Approach Boundary signifies a high risk of what?",
+                options: ["Tripping", "Shock at Close Proximity", "Equipment damage", "Arc blast pressure"],
+                answer: "Shock at Close Proximity",
+                info: "This boundary indicates a zone where the risk of electric shock from accidental movement is very high."
+            },
+            {
+                question: "Limited and Restricted boundaries are for SHOCK protection. The Arc Flash Boundary is for ____ protection.",
+                options: ["BLAST", "NOISE", "BURN", "LIGHT"],
+                answer: "BURN",
+                info: "The key takeaway is that shock boundaries protect from shock, while the Arc Flash boundary protects from burns."
+            },
+            {
+                question: "In the Dynamic PPE Loadout tool, what does the slider adjust?",
+                options: ["System Voltage", "Worker's distance", "Incident Energy", "Fault Current"],
+                answer: "Incident Energy",
+                info: "The main slider in the PPE Loadout section is used to set the Incident Energy level."
+            },
+            {
+                question: "What is the PPE Category for incident energy levels below 1.2 cal/cm²?",
+                options: ["CAT 1", "CAT 0", "CAT G", "No Category"],
+                answer: "CAT 0",
+                info: "For hazards under 1.2 cal/cm², CAT 0 applies, which involves non-melting natural fiber clothing."
+            },
+            {
+                question: "What is the minimum arc rating for clothing required in PPE Category 1?",
+                options: ["1.2 cal/cm²", "4 cal/cm²", "8 cal/cm²", "12 cal/cm²"],
+                answer: "4 cal/cm²",
+                info: "The checklist for PPE Category 1 specifies AR Clothing with a minimum rating of 4 cal/cm²."
+            },
+            {
+                question: "A multi-layer arc-rated flash suit is a key component of which PPE Category?",
+                options: ["CAT 1", "CAT 2", "CAT 3", "All Categories"],
+                answer: "CAT 3",
+                info: "The details for Category 3 specify the requirement of a multi-layer AR flash suit."
+            },
+            {
+                question: "For extreme hazards requiring a suit with a rating of 40 cal/cm² or more, which PPE category is needed?",
+                options: ["CAT 2", "CAT 3", "CAT 4", "CAT X"],
+                answer: "CAT 4",
+                info: "PPE Category 4 is for the highest hazard levels, requiring a suit with a minimum rating of 40 cal/cm²."
+            },
+            {
+                question: "What piece of PPE, required from CAT 2 and up, covers the head and neck under a face shield or hood?",
+                options: ["A hard hat liner", "A scarf", "AR Flash Hood (Balaclava)", "A winter hat"],
+                answer: "AR Flash Hood (Balaclava)",
+                info: "An Arc-Rated balaclava is required to protect the head and neck in higher PPE categories."
+            },
+            {
+                question: "What must be done to voltage-rated gloves before every use?",
+                options: ["Washed with soap", "Powdered", "Air-tested for leaks", "Warmed up"],
+                answer: "Air-tested for leaks",
+                info: "The PPE checklist notes that voltage-rated gloves must be air-tested before each use to ensure their integrity."
+            },
+            {
+                question: "What is worn over rubber insulating gloves to protect them from physical damage?",
+                options: ["Another pair of rubber gloves", "Cotton gloves", "Leather Protectors", "Work gloves"],
+                answer: "Leather Protectors",
+                info: "Leather protectors are required to be worn over voltage-rated gloves to prevent punctures and tears."
+            },
+            {
+                question: "According to the Safety Pyramid (Hierarchy of Controls), what is the #1 most effective method?",
+                options: ["PPE", "Substitution", "Awareness", "Elimination"],
+                answer: "Elimination",
+                info: "Elimination (e.g., de-energizing) is at the top of the pyramid, making it the most effective control."
+            },
+            {
+                question: "Using arc-resistant gear or remote racking equipment is an example of which type of control?",
+                options: ["Engineering Controls", "Administrative Controls", "Substitution", "PPE"],
+                answer: "Engineering Controls",
+                info: "These are examples of Engineering Controls, which physically change the work environment or equipment to reduce hazard."
+            },
+            {
+                question: "Warning labels and safe work procedures fall under which category in the Hierarchy of Controls?",
+                options: ["Elimination", "PPE", "Awareness", "Engineering Controls"],
+                answer: "Awareness",
+                info: "Awareness, which includes administrative controls like labels and procedures, is the fourth level of the hierarchy."
+            },
+            {
+                question: "According to the 'Golden Rules', what is the first 'DO'?",
+                options: ["Wear PPE", "De-energize", "Work quickly", "Inspect tools"],
+                answer: "De-energize",
+                info: "The first and most important 'DO' is to de-energize equipment whenever possible."
+            },
+            {
+                question: "What should you do with your Personal Protective Equipment (PPE) before every single use?",
+                options: ["Clean it", "Store it", "Inspect it", "Certify it"],
+                answer: "Inspect it",
+                info: "The rules state you must 'Inspect your PPE before every use' for damage or contamination."
+            },
+            {
+                question: "Which of these is a 'DON'T' according to the safety rules?",
+                options: ["Work with a partner", "Wear cotton clothing", "Work alone on energized equipment", "Plan the job"],
+                answer: "Work alone on energized equipment",
+                info: "The rules explicitly state to 'Never work alone on or near energized equipment'."
+            },
+            {
+                question: "What is the rule regarding complacency?",
+                options: ["Complacency is good", "Don't become complacent", "Complacency is okay for experts", "Only beginners are complacent"],
+                answer: "Don't become complacent",
+                info: "One of the key 'DON'Ts' is to avoid complacency and always treat equipment as hazardous."
+            },
+            {
+                question: "What is the final 'DON'T' rule about the pace of your work?",
+                options: ["Work as fast as possible", "Don't rush", "Pace doesn't matter", "Take frequent breaks"],
+                answer: "Don't rush",
+                info: "The final rule advises against rushing, emphasizing the need to take time to plan and work safely."
+            },
+            {
+                question: "What is the call-to-action text on the main button in the learning tool's introduction?",
+                options: ["Start Learning", "Begin the Tour", "Enter the Hazard Zone", "Launch the Simulator"],
+                answer: "Enter the Hazard Zone",
+                info: "The main button on the landing page is labeled 'Enter the Hazard Zone' to draw users into the learning experience."
+            },
+            {
+                question: "Besides a dropped tool or a loose connection, what is another potential cause of an arc flash mentioned in the introduction?",
+                options: ["Water spillage", "A power surge", "High humidity", "Dust"],
+                answer: "Dust",
+                info: "The introduction explains that even dust can be enough to initiate a devastating arc flash event."
+            },
+            {
+                question: "Which of the following is NOT an equipment configuration option in the Boundary Explorer?",
+                options: ["VCB (Vertical Conductors/Box)", "HCB (Horizontal Conductors/Box)", "OPE (Open Air Conductors)", "VCBB (Vertical Conductors/Box/Barrier)"],
+                answer: "OPE (Open Air Conductors)",
+                info: "The tool provides VCB, VCBB, and HCB as the three main equipment configuration options based on the IEEE 1584 standard."
+            },
+            {
+                question: "While NFPA 70E defines the boundaries, which standard is mentioned as being used for the calculations themselves?",
+                options: ["IEEE 1584", "OSHA 1926", "UL 508A", "ANSI C2"],
+                answer: "IEEE 1584",
+                info: "The tool specifies that the boundary calculations are performed using the IEEE 1584 standard."
+            },
+            {
+                question: "According to the disclaimer, what is required for a real-world risk assessment instead of this tool?",
+                options: ["A supervisor's approval", "A more advanced software version", "A comprehensive study by a qualified professional", "At least two electricians to agree"],
+                answer: "A comprehensive study by a qualified professional",
+                info: "The disclaimer explicitly states that the tool is for education only and real-world assessments require a comprehensive study by a qualified professional."
+            },
+            {
+                question: "Besides a dropped tool or a loose connection, what is another potential cause of an arc flash mentioned in the introduction?",
+                options: ["Water spillage", "A power surge", "High humidity", "Dust"],
+                answer: "Dust",
+                info: "The introduction explains that even dust can be enough to initiate a devastating arc flash event."
+            },
+            {
+                question: "Which of the following is NOT an equipment configuration option in the Boundary Explorer?",
+                options: ["VCB (Vertical Conductors/Box)", "HCB (Horizontal Conductors/Box)", "OPE (Open Air Conductors)", "VCBB (Vertical Conductors/Box/Barrier)"],
+                answer: "OPE (Open Air Conductors)",
+                info: "The tool provides VCB, VCBB, and HCB as the three main equipment configuration options based on the IEEE 1584 standard."
+            },
+            {
+                question: "While NFPA 70E defines the boundaries, which standard is mentioned as being used for the calculations themselves?",
+                options: ["IEEE 1584", "OSHA 1926", "UL 508A", "ANSI C2"],
+                answer: "IEEE 1584",
+                info: "The tool specifies that the boundary calculations are performed using the IEEE 1584 standard."
+            },            
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswersState; 
+        let shareScoreText = '';
+
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const feedbackDiv = document.getElementById('feedback');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreDisplay = document.getElementById('score-display');
+        const retakeBtn = document.getElementById('retake-btn');
+        const reviewBtn = document.getElementById('review-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const progressBar = document.getElementById('progress-bar');
+        const scoreBar = document.getElementById('score-bar');
+        const backToToolBtn = document.getElementById('back-to-tool-btn');
+        const motivationalMessage = document.getElementById('motivational-message');
+
+        const shareTwitterBtn = document.getElementById('share-twitter');
+        const shareFacebookBtn = document.getElementById('share-facebook');
+        const shareLinkedInBtn = document.getElementById('share-linkedin');
+        const shareWhatsappBtn = document.getElementById('share-whatsapp');
+
+        function initializeQuiz() {
+            currentQuestionIndex = 0;
+            const shuffledQuestions = questions.sort(() => 0.5 - Math.random());
+            window.currentQuizQuestions = shuffledQuestions.slice(0, 15);
+
+            userAnswersState = window.currentQuizQuestions.map(() => ({ selectedIndex: null, isChecked: false }));
+            quizContainer.classList.remove('hidden');
+            resultsContainer.classList.add('hidden');
+            reviewContainer.classList.add('hidden');
+            reviewContainer.innerHTML = '<h3 class="text-2xl font-bold text-white mb-4">Review Your Answers</h3>'; // Reset review content
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = window.currentQuizQuestions[currentQuestionIndex];
+            const currentQuestionState = userAnswersState[currentQuestionIndex];
+            
+            questionText.textContent = `${currentQuestionIndex + 1}. ${q.question}`;
+            optionsContainer.innerHTML = '';
+            feedbackDiv.classList.add('hidden');
+            feedbackDiv.textContent = '';
+
+            q.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.classList.add('option-button');
+                button.dataset.index = index;
+
+                if (currentQuestionState.selectedIndex === index) {
+                    button.classList.add('selected');
+                }
+
+                if (currentQuestionState.isChecked) {
+                    button.disabled = true;
+                    const isCorrect = q.options[currentQuestionState.selectedIndex] === q.answer;
+                    
+                    if (index === currentQuestionState.selectedIndex) {
+                        button.classList.add(isCorrect ? 'correct' : 'incorrect');
+                    }
+                    if (!isCorrect && option === q.answer) {
+                        button.classList.add('correct');
+                    }
+                } else {
+                    button.addEventListener('click', () => selectOption(index));
+                }
+                optionsContainer.appendChild(button);
+            });
+
+            if (currentQuestionState.isChecked) {
+                const selectedAnswerText = q.options[currentQuestionState.selectedIndex];
+                const isCorrect = selectedAnswerText === q.answer;
+                showFeedback(isCorrect, q);
+                nextBtn.textContent = currentQuestionIndex === window.currentQuizQuestions.length - 1 ? 'Finish Quiz' : 'Next Question';
+            } else {
+                 nextBtn.textContent = 'Check Answer';
+            }
+
+            updateNavigationButtons();
+            updateProgressBar();
+        }
+
+        function selectOption(selectedIndex) {
+            if (userAnswersState[currentQuestionIndex].isChecked) return; // Don't allow selection if checked
+            Array.from(optionsContainer.children).forEach(btn => btn.classList.remove('selected'));
+            optionsContainer.children[selectedIndex].classList.add('selected');
+            userAnswersState[currentQuestionIndex].selectedIndex = selectedIndex;
+            feedbackDiv.classList.add('hidden');
+        }
+
+        function checkAnswer() {
+            const currentQuestionState = userAnswersState[currentQuestionIndex];
+            if (currentQuestionState.selectedIndex === null) {
+                feedbackDiv.textContent = "Please select an answer to continue.";
+                feedbackDiv.className = 'feedback-message warning';
+                feedbackDiv.classList.remove('hidden');
+                return false;
+            }
+
+            currentQuestionState.isChecked = true;
+            loadQuestion(); // Re-render to show feedback and disable options
+            return true;
+        }
+        
+        function showFeedback(isCorrect, question) {
+             feedbackDiv.classList.remove('hidden');
+             if (isCorrect) {
+                 feedbackDiv.textContent = "Correct! " + question.info;
+                 feedbackDiv.className = 'feedback-message correct';
+             } else {
+                 feedbackDiv.textContent = `Incorrect. The correct answer was "${question.answer}". ${question.info}`;
+                 feedbackDiv.className = 'feedback-message incorrect';
+             }
+        }
+
+        function updateNavigationButtons() {
+            prevBtn.disabled = currentQuestionIndex === 0;
+        }
+
+        function updateProgressBar() {
+            const totalQuestions = window.currentQuizQuestions.length;
+            const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function showResults() {
+            let score = 0;
+            const totalQuestions = window.currentQuizQuestions.length;
+            let incorrectAnswers = [];
+
+            userAnswersState.forEach((state, index) => {
+                const question = window.currentQuizQuestions[index];
+                const isCorrect = state.selectedIndex !== null && question.options[state.selectedIndex] === question.answer;
+                if (isCorrect) {
+                    score++;
+                } else {
+                    incorrectAnswers.push({
+                        question: question.question,
+                        userAnswer: state.selectedIndex !== null ? question.options[state.selectedIndex] : "No answer selected",
+                        correctAnswer: question.answer
+                    });
+                }
+            });
+
+            quizContainer.classList.add('hidden');
+            resultsContainer.classList.remove('hidden');
+            scoreDisplay.textContent = `${score} out of ${totalQuestions}`;
+
+            shareScoreText = `I just scored ${score} out of ${totalQuestions} on the Arc Flash Safety Quiz! Test your knowledge.`;
+
+
+            // Populate review container
+            if(incorrectAnswers.length > 0) {
+                reviewBtn.classList.remove('hidden');
+                incorrectAnswers.forEach(item => {
+                    const reviewItem = document.createElement('div');
+                    reviewItem.className = 'review-item';
+                    reviewItem.innerHTML = `
+                        <p class="review-question">${item.question}</p>
+                        <p class="review-user-answer">Your answer: ${item.userAnswer}</p>
+                        <p class="review-correct-answer">Correct answer: ${item.correctAnswer}</p>
+                    `;
+                    reviewContainer.appendChild(reviewItem);
+                });
+            } else {
+                reviewBtn.classList.add('hidden'); // Hide review button if all are correct
+            }
+
+
+            const percentage = (score / totalQuestions) * 100;
+            scoreBar.style.width = `${percentage}%`;
+            scoreBar.textContent = `${Math.round(percentage)}%`;
+
+            // Motivational Message Logic
+            let message = '';
+            let messageColor = '';
+            if (percentage >= 90) {
+                message = "Excellent work! You're an Arc Flash Safety expert. Your knowledge is electrifying!";
+                messageColor = 'text-green-400';
+            } else if (percentage >= 70) {
+                message = "Great job! You have a solid understanding of arc flash safety principles.";
+                messageColor = 'text-sky-400';
+            } else if (percentage >= 50) {
+                message = "Good effort. A quick review of the learning tool will help solidify your knowledge.";
+                messageColor = 'text-yellow-400';
+            } else {
+                message = "A good start. We recommend reviewing the learning tool to build a stronger foundation in arc flash safety.";
+                messageColor = 'text-orange-400';
+            }
+            motivationalMessage.textContent = message;
+            motivationalMessage.className = `text-xl mb-8 font-semibold ${messageColor}`;
+        }
+
+        // --- Event Listeners ---
+        nextBtn.addEventListener('click', () => {
+            const currentState = userAnswersState[currentQuestionIndex];
+            const totalQuestions = window.currentQuizQuestions.length;
+
+            if (currentState.isChecked) { // If already checked, move to next question
+                if (currentQuestionIndex < totalQuestions - 1) {
+                    currentQuestionIndex++;
+                    loadQuestion();
+                } else {
+                    showResults();
+                }
+            } else { // If not checked, check the answer
+                checkAnswer();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        });
+
+        retakeBtn.addEventListener('click', initializeQuiz);
+        
+        backToToolBtn.addEventListener('click', () => {
+            window.location.href = 'index.html'; 
+        });
+
+        reviewBtn.addEventListener('click', () => {
+            reviewContainer.classList.toggle('hidden');
+            reviewBtn.textContent = reviewContainer.classList.contains('hidden') ? 'Review Answers' : 'Hide Review';
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (quizContainer.classList.contains('hidden')) return; // Only active during quiz
+
+            const options = Array.from(optionsContainer.children);
+            let selectedIndex = userAnswersState[currentQuestionIndex].selectedIndex;
+
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (selectedIndex === null) {
+                    selectedIndex = -1;
+                }
+                const direction = e.key === 'ArrowDown' ? 1 : -1;
+                let nextIndex = (selectedIndex + direction + options.length) % options.length;
+                selectOption(nextIndex);
+            }
+
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                nextBtn.click();
+            }
+        });
+
+        // --- Share Event Listeners ---
+        const quizUrl = window.location.href;
+        const quizTitle = "Arc Flash Safety Quiz";
+
+        shareTwitterBtn.addEventListener('click', () => {
+            const text = encodeURIComponent(shareScoreText);
+            const url = `https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(quizUrl)}`;
+            window.open(url, '_blank');
+        });
+
+        shareFacebookBtn.addEventListener('click', () => {
+            const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(quizUrl)}`;
+            window.open(url, '_blank');
+        });
+
+        shareLinkedInBtn.addEventListener('click', () => {
+            const summary = encodeURIComponent(shareScoreText);
+            const url = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(quizUrl)}&title=${encodeURIComponent(quizTitle)}&summary=${summary}`;
+            window.open(url, '_blank');
+        });
+
+        shareWhatsappBtn.addEventListener('click', () => {
+            const text = encodeURIComponent(`${shareScoreText} ${quizUrl}`);
+            const url = `https://api.whatsapp.com/send?text=${text}`;
+            window.open(url, '_blank');
+        });
+
+        // Initial load
+        initializeQuiz();
+    </script>
+</body>
+</html>
